@@ -16,7 +16,7 @@ For more details, see the [project proposal slides](https://docs.google.com/pres
 - [Jungeun Kim](https://github.com/jjungkang2)
 - [Jinhee Yoo](https://github.com/jinhee-yoo)
 - [Yeji Han](https://github.com/yj-han)
-- [Jisu Yim]
+- [Jisu Yim](https://github.com/yimjisu)
 
 ### Branch and PR
 - Use branches to implement one feature
