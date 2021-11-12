@@ -1,7 +1,7 @@
 from enum import Enum, unique
 from typing import List, Optional
 
-from course import Course
+from registration.course import Course
 
 @unique
 class Degree(Enum):

@@ -1,8 +1,8 @@
 from enum import Enum
 from typing import List
 
-from course import Course
-from student import Student
+from registration.course import Course
+from registration.student import Student
 
 
 class SystemType(Enum):
