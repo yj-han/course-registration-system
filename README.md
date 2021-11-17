@@ -27,7 +27,7 @@ For more details, see the [project proposal slides](https://docs.google.com/pres
 ```
 Commit Message
 
-<Done>
+Done
 - task 1
 - task 2
 - ...  

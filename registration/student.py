@@ -21,7 +21,8 @@ class Major(Enum):
 class Student:
     
     def __init__(self, 
-                 id: str, 
+                 id: str,
+                 year: int,
                  degree: Degree,
                  major: Major, 
                  minor: Optional[Major] = None, 
@@ -31,6 +32,7 @@ class Student:
 
         Args:
             id (str): [description]
+            year (int): [description]            
             degree (Degree): [description]
             major (Major): [description]
             minor (Optional[Major]): [description]
@@ -38,6 +40,7 @@ class Student:
             final_timetable (List[Course]): [description]
         """
         self.id = id;
+        self.year = year;
         self.degree = degree;
         self.major = major;
         self.minor = minor;
