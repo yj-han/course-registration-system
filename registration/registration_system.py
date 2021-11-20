@@ -46,8 +46,13 @@ class LotterySystem(RegistrationSystem):
             courses_dict (Dict[str, Course]): whole courses for this registration
         """
         super().__init__(courses_dict)
-        registered_students = dict.fromkeys(courses_dict.keys() , [])
-        self.registered_students = registered_students
+        registration_dict = {
+            k: {
+                "course": v, 
+                "register_list": []
+            } for k, v in self.courses_dict.items()
+        }
+        self.registration_dict = registration_dict
         
     def register_students(self, students: List[Student]) -> List[Student]:
         """Register students to courses
@@ -61,18 +66,22 @@ class LotterySystem(RegistrationSystem):
         # Create a registration list for each course
         for student in students:
             for course in student.timetable:
-                self.registered_students[course.code].append(student)
-        
+                self.registration_dict[course.code]["register_list"].append(student)
+
         # Randomly select students from each course
-        for code, students in self.registered_students.items():
-            self.courses_dict[code].num_applicants = len(students)
+        for code, register_info in self.registration_dict.items():
+            course = register_info["course"]
+            reigister_list = register_info["register_list"]
             
+            self.courses_dict[code].num_applicants = len(reigister_list)
+
             if not course.is_lottery:
-                map(lambda student: student.add_to_final_timetable(course), students)
+                for student in reigister_list:
+                    student.add_to_final_timetable(course)
                 continue
             else:
-                random.shuffle(students)
-                for i, student in enumerate(students):
+                random.shuffle(reigister_list)
+                for i, student in enumerate(reigister_list):
                     if i < course.capacity:
                         student.add_to_final_timetable(course)
                     else:
