@@ -21,26 +21,45 @@ def sum_credits(timetable):
             credits += courses[t].credit
     return credits
 
-def credit_compare():
+def credit_distribution():
     credits = []
     win_credits = []
     final_credits = []
     for s in students:
         if s.degree == Degree.BACHELOR:
-            credits.append(sum_credits(s.timetable))
-            win_credits.append(sum_credits(s.win_timetable))
-            final_credits.append(sum_credits(s.final_timetable))
+            wish_credit = sum_credits(s.timetable)
+            win_credit = sum_credits(s.win_timetable)
+            if wish_credit > 0:
+                credits.append(wish_credit)
+                win_credits.append(win_credit)
     
     args = dict(alpha = 0.5, bins = 100)
     plt.clf()
     plt.figure(figsize=(12,8))
-    plt.hist(win_credits, **args, color="b", label = "win credits")
-    plt.hist(final_credits, **args, color="r", label = "final credits")
+    plt.hist(win_credits, **args, color="r", label = "win credits")
     plt.hist(credits, **args, color="g", label = "wish credits")
     plt.xlim(0, 24)
     plt.legend()
     # plt.show()
     plt.savefig('visualization/result/credit_comparison.png', dpi=300)
+
+def credit_comparison_ratio():
+    ratios = []
+    for s in students[:10]:
+        if s.degree == Degree.BACHELOR:
+            wish_credit = sum_credits(s.timetable)
+            win_credit = sum_credits(s.win_timetable)
+            print(s.timetable, s.win_timetable)
+            if (wish_credit > 0):
+                ratios.append(win_credit / wish_credit * 100)
+    print(ratios[:10])
+    args = dict(alpha = 0.5, bins = 100)
+    plt.clf()
+    plt.figure(figsize=(12,8))
+    plt.hist(ratios, **args, color="r", label = "ratios")
+    plt.legend()
+    plt.show()
+    #plt.savefig('visualization/result/credit_comparison.png', dpi=300)
 
 def applicants_ratio():
     args = dict(alpha = 0.5, bins = 100)
@@ -188,19 +207,21 @@ def year_distribution():
     plt.savefig('visualization/result/ratio_per_years.png', dpi=300)
     pass
 
-# 학생이 신청한 학점/당첨된 학점/실제 수강한 학점 분포
-credit_compare()
+# 학생이 신청한 학점 / 당첨된 학점 / 실제 수강한 학점 분포
+#credit_distribution()
+
+# 학생이 신청한 학점 대비 당첨된 학점.
+credit_comparison_ratio()
 
 # 수업별 정원의 비율 분포
-applicants_ratio()
+#applicants_ratio()
 
 # 전공 / 복수전공 / 부전공 / 전공X 별
 # 수강신청 대비 당첨 비율  (만족도)
-get_major_list()
-major_distribution()
+#get_major_list()
+#major_distribution()
 
-# TO-DO
 # 과목별 주전/복전/부전 신청 및 당첨 비율
 
 # 학년 별 수강신청 대비 당첨 비율 
-year_distribution()
+#year_distribution()

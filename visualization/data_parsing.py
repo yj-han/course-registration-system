@@ -5,11 +5,11 @@ from classes.course import Course
 from classes.major import Major
 import pickle
 
-student_path = "data/wishlist.xlsx"
-course_path = "data/course_update.xlsx"
+student_path = "../data/wishlist.xlsx"
+course_path = "../data/course_update.xlsx"
 
-pickle_course_path = "data/course.pickle"
-pickle_student_path = "data/student.pickle"
+pickle_course_path = "../data/course.pickle"
+pickle_student_path = "../data/student.pickle"
 
 def read_course_info():
     df = pd.ExcelFile(course_path).parse(
