@@ -30,7 +30,8 @@ class Student:
                  id: str,
                  year: int,
                  degree: Degree,
-                 major: Major, 
+                 major: Major,
+                 double_major: Optional[Major] = None,
                  minor: Optional[Major] = None, 
                  timetable: List[Course] = [], 
                  final_timetable: List[Course] = []) -> None:
@@ -49,6 +50,7 @@ class Student:
         self.year = year
         self.degree = degree
         self.major = major
+        self.double_major = double_major
         self.minor = minor
         self.timetable = timetable
         self.final_timetable = final_timetable
