@@ -2,22 +2,28 @@ from enum import Enum, unique
 from typing import List, Optional
 
 from registration.course import Course
+from registration.major import Major
+
 
 @unique
-class Degree(Enum):
-    BACHELOR = 1
-    MASTER = 2
-    DOCTOR = 3
-    # TODO: 석박통합이 필요할지 데이터보고 확인
-    MS_PHD_INTEGRATION = 4
-
-@unique    
-class Major(Enum):
-    CS = 1
-    BS = 2
-    EE = 3
-    # TODO: 과목코드의 앞 두 자리와 같으므로 파싱하여 자동으로 코드 생성한 뒤 옮겨 붙이기 (알파벳 순으로 변경)
-
+class Degree(str, Enum):
+    BACHELOR = "학사과정"
+    MASTER = "석사과정"
+    DOCTOR = "박사과정"
+    ELSE = "기타"
+    
+    @classmethod
+    def value_of(cls, value):
+        if "학사" in value:
+            return cls.BACHELOR
+        elif "석사" in value:
+            return cls.MASTER
+        elif "박사" in value:
+            return cls.DOCTOR
+        else:
+            return cls.ELSE
+        
+        
 class Student:
     
     def __init__(self, 
@@ -28,21 +34,42 @@ class Student:
                  minor: Optional[Major] = None, 
                  timetable: List[Course] = [], 
                  final_timetable: List[Course] = []) -> None:
-        """Initialization
+        """Initialization of Student
 
         Args:
-            id (str): [description]
-            year (int): [description]            
-            degree (Degree): [description]
-            major (Major): [description]
-            minor (Optional[Major]): [description]
-            timetable (List[Course]): [description]
-            final_timetable (List[Course]): [description]
+            id (str): unique token
+            year (int): year of entrance
+            degree (Degree): level of degree
+            major (Major): major of student
+            minor (Optional[Major]): minor if exists else None
+            timetable (List[Course]): a list of courses registered
+            final_timetable (List[Course]): a list of courses finally set
         """
-        self.id = id;
-        self.year = year;
-        self.degree = degree;
-        self.major = major;
-        self.minor = minor;
-        self.timetable = timetable;
-        self.final_timetable = final_timetable;
+        self.id = id
+        self.year = year
+        self.degree = degree
+        self.major = major
+        self.minor = minor
+        self.timetable = timetable
+        self.final_timetable = final_timetable
+
+    def add_to_timetable(self, course: Course) -> None:
+        """Add course to final timetable
+
+        Args:
+            course (Course): course to add
+        """
+        self.timetable.append(course)    
+
+    def add_to_final_timetable(self, course: Course) -> None:
+        """Add course to final timetable
+
+        Args:
+            course (Course): course to add
+        """
+        self.final_timetable.append(course)
+    
+    def __str__(self) -> str:
+        return f"""id: {self.id}, year: {self.year}, degree: {self.degree}, 
+            major: {self.major}, # timetable: {len(self.timetable)},  # final timetable: {len(self.final_timetable)}"""
+        
