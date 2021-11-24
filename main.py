@@ -1,4 +1,4 @@
-from registration.registration_system import LotterySystem
+from registration.registration_system import LotterySystem, PrioritizeSystem
 from util.parse import parse_course_file, parse_student_file
 
 if __name__ == "__main__":
@@ -9,3 +9,8 @@ if __name__ == "__main__":
 
     lottery_system = LotterySystem(courses_dict)
     students = lottery_system.register_students(students)
+
+    # Change distributions to see various results
+    prioritize_system = PrioritizeSystem(courses_dict)
+    students = prioritize_system.designate_priority(students, (0.5, 0.4, 0.1))
+    students = prioritize_system.register_students(students, (0.2, 0.2, 0.2))
