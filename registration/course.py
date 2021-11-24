@@ -42,3 +42,6 @@ class Course:
 
     def __str__(self) -> str:
         return f"code: {self.code}, capacity: {self.capacity}, num_applicants: {self.num_applicants}, is_lottery: {self.is_lottery}"
+
+    def __repr__(self):
+        return str(self)

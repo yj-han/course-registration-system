@@ -41,16 +41,19 @@ def parse_student_file(filename: str, courses_dict: Dict[str, Course]) -> Dict[s
             major = Major.value_of(row["소속학과"])
             
             if not pd.isna(row["부전공"]):
-                minor = Major.value_of(row["부전공"]) 
+                minor = Major.value_of(row["부전공"])
+                double_major = None
             elif not pd.isna(row["복수전공"]):
-                minor = Major.value_of(row["복수전공"]) 
+                double_major = Major.value_of(row["복수전공"])
+                minor = None
             else:
                 minor = None
+                double_major = None
 
             timetable = [course]
             final_timetable = []
             
-            student = Student(id, year, degree, major, minor, timetable, final_timetable)
+            student = Student(id, year, degree, major, double_major, minor, timetable, final_timetable)
             students_dict[id] = student
             continue
         else:
