@@ -15,6 +15,8 @@ def parse_course_file(filename: str, credit_filename: str, semester: Semester) -
 
     Args:
         filename (str): the name of the file
+        credit_filename (str): the name of the file with credits
+        semester (Semester): the semester to parse
 
     Returns:
         Dict[str, Course]: a dictionary of `Course` objects which has 0 `num_applicants`
@@ -73,12 +75,15 @@ def parse_course_file(filename: str, credit_filename: str, semester: Semester) -
     return courses_dict
 
 
-def parse_student_file(filename: str, courses_dict: Dict[str, Course]) -> Dict[str, Student]:
+def parse_student_file(filename: str, courses_dict: Dict[str, Course], semester: Semester) -> Dict[str, Student]:
     """
     Parse a student data file `filename` with `courses_dict`
-
+    Add applicants to courses_dict
+    
     Args:
         filename (str): the name of the file
+        courses_dict (Dict[str, Course]): a dictionary of `Course` objects
+        semester (Semester): the semester to parse
 
     Returns:
         Dict[str, Student]: a dictionary of `Student` objects
@@ -88,38 +93,56 @@ def parse_student_file(filename: str, courses_dict: Dict[str, Course]) -> Dict[s
 
     assert file_path.exists()
     
-    df = pd.read_excel(file_path, engine='openpyxl')
+    sheet_name = "2021 봄" if semester == Semester.SPRING else "2021 가을"
+    engine = "openpyxl" if file_path.suffix == ".xlsx" else "xlrd"
+    
+    df = pd.read_excel(file_path, sheet_name=sheet_name, engine=engine)
     students_dict = dict()
-
+    
     for _, row in df.iterrows():
+        # Find the course
+        code = row["과목번호"].strip()
+        unique_code = code + str(row["분반"]).strip() if not pd.isna(row["분반"]) else code
+        
+        assert unique_code in courses_dict.keys()
+        
+        course = courses_dict[unique_code]
+        
+        # Find the student
         id = row["가명학번"]
-        courses_dict[row["과목번호"]].num_applicants += 1
-        course = courses_dict[row["과목번호"]]
-
         if id not in students_dict.keys():
             year = int(id[:4])
             degree = Degree.value_of(row["과정"])
             major = Major.value_of(row["소속학과"])
-            
+
+            minor = None            
             if not pd.isna(row["부전공"]):
                 minor = Major.value_of(row["부전공"])
-                double_major = None
-            elif not pd.isna(row["복수전공"]):
-                double_major = Major.value_of(row["복수전공"])
-                minor = None
-            else:
-                minor = None
-                double_major = None
 
-            timetable = [course]
-            final_timetable = []
+            double_major = None
+            if not pd.isna(row["복수전공"]):
+                double_major = Major.value_of(row["복수전공"])
             
-            student = Student(id, year, degree, major, double_major, minor, timetable, final_timetable)
+            timetable = [course]
+            
+            student = Student(
+                id,
+                year,
+                degree,
+                major,
+                double_major,
+                minor,
+                timetable,
+            )
+            
             students_dict[id] = student
             continue
         else:
-            students_dict[id].timetable.append(course)
+            students_dict[id].add_to_timetable(course)
         
+        # Add applicants (Student) to course applicants list
+        courses_dict[unique_code].add_applicant(students_dict[id])
+
     return students_dict
 
 

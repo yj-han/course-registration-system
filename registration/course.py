@@ -1,11 +1,11 @@
 from enum import Enum
-from typing import Optional
+from typing import List, Optional, TYPE_CHECKING
 
 from registration.major import Major
 
 class Semester(Enum):
-    SPRING = "봄";
-    FALL = "가을";
+    SPRING = "봄"
+    FALL = "가을"
 
     
 class Course:
@@ -18,8 +18,8 @@ class Course:
                  division: Optional[str],
                  is_lottery: bool,
                  semester: Semester = Semester.SPRING,
-                 credit: int = 0,                 
-                 num_applicants: int = 0,                  
+                 credit: int = 0,
+                 applicants = [],    # Removed type annotation to avoid circular import between course.py and student.py
                  is_au: bool = False,
 ) -> None:
         """Initialization of Course. 
@@ -34,11 +34,10 @@ class Course:
             is_lottery (bool): is lottery of course
             semester (Semester, optional): semester of course. Defaults to SPRING.            
             *credit (int, optional): credit of course. Defaults to 0.
-            *num_applicants (int, optional): number of applicants of course. Defaults to 0.
+            *applicants (List[Student], optional): applicants of course. Defaults to [].
             *is_au (bool, optional): is_au of course. Defaults to False.
         """
-
-        assert capacity >= 0 and num_applicants >= 0
+        assert capacity >= 0 and len(applicants) >= 0
         
         self.name = name
         self.code = code    # Course code used here should be unique
@@ -48,8 +47,15 @@ class Course:
         self.is_lottery = is_lottery        
         self.semester = semester
         self.credit = credit
-        self.num_applicants = num_applicants        
+        self.applicants = applicants
         self.is_au = is_au
+
+        self.num_applicants = len(applicants)
+
+    def add_applicant(self, applicant) -> None:
+        """Add applicant to course."""
+        self.num_applicants += 1
+        self.applicants.append(applicant)
 
     def __str__(self) -> str:
         return f"{self.name} \n\t code: {self.code} \n\t major: {self.major} \n\t capacity: {self.capacity} \n\t division: {self.division} \n\t is_lottery: {self.is_lottery} \n\t semester: {self.semester} \n\t credit: {self.credit} \n\t num_applicants: {self.num_applicants} \n\t is_au: {self.is_au}"
