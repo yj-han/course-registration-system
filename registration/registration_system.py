@@ -65,7 +65,10 @@ class LotterySystem(RegistrationSystem):
         Returns:
             List[Student]: registered students
         """
-
+        # Create a registration list for each course
+        for student in students:
+            for course in student.timetable:
+                self.registration_dict[course.code]["register_list"].append(student)
 
         # Randomly select students from each course
         for code, register_info in self.registration_dict.items():
@@ -147,7 +150,7 @@ class GradePrioritySystem(RegistrationSystem):
 
             self.courses_dict[code].num_applicants = len(register_list)
 
-            if len(register_list) <= course.capacity:
+            if len(register_list) <= course.capacity or not course.is_lottery:
                 for student in register_list:
                     student.add_to_final_timetable(course)
                 continue
@@ -157,7 +160,7 @@ class GradePrioritySystem(RegistrationSystem):
                     if student.year <= graduate_standard:
                         grade_dict["candidates"].append(student)
                     else:
-                        grade_dict["general"].append(student)
+                        grade_dict["remaining"].append(student)
 
                 random.shuffle(grade_dict["candidates"])
                 grade_priority_capacity = int(course.capacity * percentage / 100)
