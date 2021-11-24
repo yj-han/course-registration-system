@@ -73,3 +73,5 @@ class Student:
         return f"""id: {self.id}, year: {self.year}, degree: {self.degree}, 
             major: {self.major}, # timetable: {len(self.timetable)},  # final timetable: {len(self.final_timetable)}"""
         
+    def __repr__(self):
+        return str(self)
