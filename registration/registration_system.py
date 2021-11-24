@@ -10,11 +10,10 @@ from registration.student import Student
 
 
 class SystemType(Enum):
-    FCFS = 1;
-    LOTTERY = 2;
-    PRIORITIZE = 3;
-    BETTING = 4;
-    # TODO: 더 필요한 경우 enum 추가하기
+    LOTTERY = 1
+    MAJOR_PRIORITY = 2
+    GRADE_PRIORITY = 3
+    TOP3_PRIORITY = 4
 
 
 class RegistrationSystem:
@@ -25,6 +24,13 @@ class RegistrationSystem:
             courses_dict (Dict[str, Course]): whole courses for this registration
         """
         self.courses_dict = courses_dict
+        registration_dict = {
+            k: {
+                "course": v, 
+                "register_list": []
+            } for k, v in self.courses_dict.items()
+        }
+        self.registration_dict = registration_dict
         
     def register_students(self, students: List[Student]) -> List[Student]:
         """Register students to courses
@@ -46,13 +52,17 @@ class LotterySystem(RegistrationSystem):
             courses_dict (Dict[str, Course]): whole courses for this registration
         """
         super().__init__(courses_dict)
-        registration_dict = {
-            k: {
-                "course": v, 
-                "register_list": []
-            } for k, v in self.courses_dict.items()
-        }
-        self.registration_dict = registration_dict
+
+    def set_registration_list(self, students: List[Student]) -> None:
+        """Set registration list
+
+        Args:
+            students (List[Student]): students to register
+        """
+        # Create a registration list for each course
+        for student in students:
+            for course in student.timetable:
+                self.registration_dict[course.code]["register_list"].append(student)
         
     def register_students(self, students: List[Student]) -> List[Student]:
         """Register students to courses
@@ -63,11 +73,8 @@ class LotterySystem(RegistrationSystem):
         Returns:
             List[Student]: registered students
         """
-        # Create a registration list for each course
-        for student in students:
-            for course in student.timetable:
-                self.registration_dict[course.code]["register_list"].append(student)
-                
+        self.set_registration_list(students)
+
         # Randomly select students from each course
         for code, register_info in self.registration_dict.items():
             course = register_info["course"]
@@ -85,10 +92,172 @@ class LotterySystem(RegistrationSystem):
                         student.add_to_final_timetable(course)
                     else:
                         break
-        
+            
         return students
-    
-class PrioritizeSystem(LotterySystem):
+      
+
+class MajorPrioritySystem(LotterySystem):
+    def __init__(self, courses_dict: Dict[str, Course]) -> None:
+        """class for Lottery System
+
+        Args:
+            courses_dict (Dict[str, Course]): whole courses for this registration
+        """
+        super().__init__(courses_dict)
+
+    def register_students(self, students: List[Student], p: Tuple) -> List[Student]:
+        """Register students to courses
+
+        Args:
+            students (List[Student]): students to register
+            p (Tuple): the probabilities to give priority for major students
+
+        Returns:
+            List[Student]: registered students
+        """
+        assert len(p) == 3, "Length of p should be 3"
+
+        major_percentage, double_major_percentage, minor_percentage = p
+        assert major_percentage + double_major_percentage + minor_percentage < 1, "Sum of three values should be less than 1"
+
+        self.set_registration_list(students)
+
+        # Randomly select students from each course
+        for code, register_info in self.registration_dict.items():
+            course = register_info["course"]
+            register_list = register_info["register_list"]
+
+            self.courses_dict[code].num_applicants = len(register_list)
+
+            if not course.is_lottery:
+                for student in register_list:
+                    student.add_to_final_timetable(course)
+                continue
+            else:
+                major_students = {"major": [], "double_major": [], "minor": [], "remaining": []}
+                for student in register_list:
+                    if student.major == course.major:
+                        major_students["major"].append(student)
+                    elif student.double_major == course.major:
+                        major_students["double_major"].append(student)
+                    elif student.minor == course.major:
+                        major_students["minor"].append(student)
+                    else:
+                        major_students["remaining"].append(student)
+
+                major_priority_capacity = int(course.capacity * major_percentage)
+                double_major_priority_capacity = int(course.capacity * double_major_percentage)
+                minor_priority_capacity = int(course.capacity * minor_percentage)
+
+                registered_students_count = 0
+                random.shuffle(major_students["major"])
+                for i, student in enumerate(major_students["major"]):
+                    if i < major_priority_capacity:
+                        student.add_to_final_timetable(course)
+                        registered_students_count += 1
+                    else:
+                        break
+
+                random.shuffle(major_students["double_major"])
+                for i, student in enumerate(major_students["double_major"]):
+                    if i < double_major_priority_capacity:
+                        student.add_to_final_timetable(course)
+                        registered_students_count += 1
+                    else:
+                        break
+
+                random.shuffle(major_students["minor"])
+                for i, student in enumerate(major_students["minor"]):
+                    if i < minor_priority_capacity:
+                        student.add_to_final_timetable(course)
+                        registered_students_count += 1
+                    else:
+                        break
+
+                remaining = major_students["remaining"]
+                if major_priority_capacity < len(major_students["major"]):
+                    remaining += major_students["major"][major_priority_capacity:]
+                if double_major_priority_capacity < len(major_students["double_major"]):
+                    remaining += major_students["double_major"][double_major_priority_capacity:]
+                if minor_priority_capacity < len(major_students["minor"]):
+                    remaining += major_students["minor"][minor_priority_capacity:]
+
+                random.shuffle(remaining)
+                for i, student in enumerate(remaining):
+                    if i < (course.capacity - registered_students_count):
+                        student.add_to_final_timetable(course)
+                    else:
+                        break
+
+        return students
+
+      
+class GradePrioritySystem(LotterySystem):
+    def __init__(self, courses_dict: Dict[str, Course]) -> None:
+        """class for Grade Priority System
+
+        Args:
+            courses_dict (Dict[str, Course]): whole courses for this registration
+        """
+        super().__init__(courses_dict)
+
+    def register_students(self, students: List[Student], graduate_standard: int, percentage: int) -> List[Student]:
+        """Register students to courses
+
+        Args:
+            students (List[Student]): students to register
+            graduate_standard (int): year to regard as graduate-to-be
+            percentage (float): the probability to give priority for graduate-to-be students
+
+        Returns:
+            List[Student]: registered students
+        """
+        assert percentage < 1
+
+        self.set_registration_list(students)
+
+        for code, register_info in self.registration_dict.items():
+            course = register_info["course"]
+            register_list = register_info["register_list"]
+
+            self.courses_dict[code].num_applicants = len(register_list)
+
+            if not course.is_lottery:
+                for student in register_list:
+                    student.add_to_final_timetable(course)
+                continue
+            else:
+                grade_dict = {"candidates": [], "remaining": []}
+                for student in register_list:
+                    if student.year <= graduate_standard:
+                        grade_dict["candidates"].append(student)
+                    else:
+                        grade_dict["remaining"].append(student)
+
+                grade_priority_capacity = int(course.capacity * percentage)
+
+                random.shuffle(grade_dict["candidates"])
+                for i, student in enumerate(grade_dict["candidates"]):
+                    if i < grade_priority_capacity:
+                        student.add_to_final_timetable(course)
+                    else:
+                        break
+
+                remaining = grade_dict["remaining"]
+                if grade_priority_capacity < len(grade_dict["candidates"]):
+                    remaining += grade_dict["candidates"][grade_priority_capacity:]
+
+                random.shuffle(remaining)
+                for i, student in enumerate(remaining):
+                    if i < (course.capacity - grade_priority_capacity):
+                        student.add_to_final_timetable(course)
+                    else:
+                        break
+
+        return students
+
+
+class Top3PrioritySystem(LotterySystem):
     def __init__(self, courses: Dict[str, Course]) -> None:
         super().__init__(courses)
 
@@ -105,7 +274,7 @@ class PrioritizeSystem(LotterySystem):
         assert len(p) == 3, "Length of p should be 3"
         
         p1, p2, p3 = p
-        assert p1+p2+p3 == 1, "Sum of three values should be 1"
+        assert p1 + p2 + p3 == 1, "Sum of three values should be 1"
 
         # Reorder students' timetable order to consider priority
         for student in students:
@@ -172,12 +341,9 @@ class PrioritizeSystem(LotterySystem):
         assert len(p) == 3, "Length of p should be 3"
 
         p1, p2, p3 = p
-        assert p1+p2+p3 < 1, "Sum of three values should be less than 1"
+        assert p1 + p2 + p3 < 1, "Sum of three values should be less than 1"
 
-        # Create a registration list for each course
-        for student in students:
-            for course in student.timetable:
-                self.registration_dict[course.code]["register_list"].append(student)
+        self.set_registration_list(students)
 
         # Randomly select students from each course considering priority
         for code, register_info in self.registration_dict.items():
@@ -191,162 +357,60 @@ class PrioritizeSystem(LotterySystem):
                 continue
             else:
                 # Make priority list considering the order of students' timetable
-                first_prioritized = []
-                second_prioritized = []
-                third_prioritized = []
-                fourth_prioritized = []
+                top3_prioritized = {"first": [], "second": [], "third": [], "etc": []}
 
                 for student in register_list:
                     for priority, student_course in enumerate(student.timetable):
                         if student_course.code == code:
                             if priority == 0:
-                                first_prioritized.append(student)
+                                top3_prioritized["first"].append(student)
                             elif priority == 1:
-                                second_prioritized.append(student)
+                                top3_prioritized["second"].append(student)
                             elif priority == 2:
-                                third_prioritized.append(student)
+                                top3_prioritized["third"].append(student)
                             else:
-                                fourth_prioritized.append(student)
+                                top3_prioritized["etc"].append(student)
                             
                             continue
 
-                first_capacity = min(int(course.capacity * p1), len(first_prioritized))
-                second_capacity = min(int(course.capacity * p2), len(second_prioritized))
-                third_capacity = min(int(course.capacity * p3), len(third_prioritized))
+                first_capacity = min(int(course.capacity * p1), len(top3_prioritized["first"]))
+                second_capacity = min(int(course.capacity * p2), len(top3_prioritized["second"]))
+                third_capacity = min(int(course.capacity * p3), len(top3_prioritized["third"]))
                 fourth_capacity = course.capacity - first_capacity - second_capacity - third_capacity
 
                 # Randomly select students ordered by priority
                 remained_students = []
-                random.shuffle(first_prioritized)
-                for i, student in enumerate(first_prioritized):
+                random.shuffle(top3_prioritized["first"])
+                for i, student in enumerate(top3_prioritized["first"]):
                     if i < first_capacity:
                         student.add_to_final_timetable(course)
                     else:
                         remained_students.append(student)
 
-                second_prioritized.extend(remained_students)
+                top3_prioritized["second"].extend(remained_students)
                 remained_students = []
-                random.shuffle(second_prioritized)
-                for i, student in enumerate(second_prioritized):
+                random.shuffle(top3_prioritized["second"])
+                for i, student in enumerate(top3_prioritized["second"]):
                     if i < second_capacity:
                         student.add_to_final_timetable(course)
                     else:
                         remained_students.append(student)
 
-                third_prioritized.extend(remained_students)
+                top3_prioritized["third"].extend(remained_students)
                 remained_students = []
-                random.shuffle(third_prioritized)
-                for i, student in enumerate(third_prioritized):
+                random.shuffle(top3_prioritized["third"])
+                for i, student in enumerate(top3_prioritized["third"]):
                     if i < third_capacity:
                         student.add_to_final_timetable(course)
                     else:
                         remained_students.append(student)
 
-                fourth_prioritized.extend(remained_students)
-                random.shuffle(fourth_prioritized)
-                for i, student in enumerate(fourth_prioritized):
+                top3_prioritized["etc"].extend(remained_students)
+                random.shuffle(top3_prioritized["etc"])
+                for i, student in enumerate(top3_prioritized["etc"]):
                     if i < fourth_capacity:
                         student.add_to_final_timetable(course)
                     else:
                         break
 
         return students
-
-
-class MajorPrioritySystem(RegistrationSystem):
-    def __init__(self, courses_dict: Dict[str, Course]) -> None:
-        """class for Lottery System
-
-        Args:
-            courses_dict (Dict[str, Course]): whole courses for this registration
-        """
-        super().__init__(courses_dict)
-        registration_dict = {
-            k: {
-                "course": v,
-                "register_list": []
-            } for k, v in self.courses_dict.items()
-        }
-        self.registration_dict = registration_dict
-
-    def register_students(self, students: List[Student], major_percentage: int, double_major_percentage: int, minor_percentage: int) -> List[Student]:
-        """Register students to courses
-
-        Args:
-            students (List[Student]): students to register
-            percentage (int): percentage to give priority for major students
-
-        Returns:
-            List[Student]: registered students
-        """
-        # Create a registration list for each course
-        for student in students:
-            for course in student.timetable:
-                self.registration_dict[course.code]["register_list"].append(student)
-
-        # Randomly select students from each course
-        for code, register_info in self.registration_dict.items():
-            course = register_info["course"]
-            register_list = register_info["register_list"]
-            
-            assert course.get_num_applicants() == len(register_list), "Number of applicants should be equal to number of students"
-
-            if len(register_list) <= course.capacity or not course.is_lottery:
-                for student in register_list:
-                    student.add_to_final_timetable(course)
-                continue
-            else:
-                major_students = {"major": [], "double_major": [], "minor": [], "remaining": []}
-                for student in register_list:
-                    if student.major == course.major:
-                        major_students["major"].append(student)
-                    elif student.double_major == course.major:
-                        major_students["double_major"].append(student)
-                    elif student.minor == course.major:
-                        major_students["minor"].append(student)
-                    else:
-                        major_students["remaining"].append(student)
-
-                random.shuffle(major_students["major"])
-                major_priority_capacity = int(course.capacity * major_percentage / 100)
-                double_major_priority_capacity = int(course.capacity * double_major_percentage / 100)
-                minor_priority_capacity = int(course.capacity * minor_percentage / 100)
-
-                registered_students_count = 0
-                for i, student in enumerate(major_students["major"]):
-                    if i < major_priority_capacity:
-                        student.add_to_final_timetable(course)
-                        registered_students_count += 1
-                    else:
-                        break
-
-                for i, student in enumerate(major_students["double_major"]):
-                    if i < double_major_priority_capacity:
-                        student.add_to_final_timetable(course)
-                        registered_students_count += 1
-                    else:
-                        break
-
-                for i, student in enumerate(major_students["minor"]):
-                    if i < minor_priority_capacity:
-                        student.add_to_final_timetable(course)
-                        registered_students_count += 1
-                    else:
-                        break
-
-                remaining = major_students["remaining"]
-                if major_priority_capacity < len(major_students["major"]):
-                    remaining += major_students["major"][major_priority_capacity:]
-                if double_major_priority_capacity < len(major_students["double_major"]):
-                    remaining += major_students["doble_major"][double_major_priority_capacity:]
-                if minor_priority_capacity < len(major_students["minor"]):
-                    remaining += major_students["minor"][minor_priority_capacity:]
-
-                random.shuffle(remaining)
-                for i, student in enumerate(remaining):
-                    if i < (course.capacity - registered_students_count):
-                        student.add_to_final_timetable(course)
-                    else:
-                        break
-
-        return student
