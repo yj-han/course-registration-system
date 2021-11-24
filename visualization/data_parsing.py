@@ -28,8 +28,8 @@ def read_course_info():
         num_applicants = c['실제수강인원']
         is_lottery = c['추첨진행여부']
         au = c['AU']
-        credit = c['credit']
-        classification = c['classification']
+        credit = c['학점']
+        classification = c['과목구분']
         course = Course(
             name, code, major, classification, credit, capacity, 
             division, num_applicants, is_lottery, au)

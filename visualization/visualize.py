@@ -90,6 +90,7 @@ def get_ratios(timetables, win_timetables, label, major):
 
 def avg(L):
     return round(sum(L)/len(L), 2)
+
 def major_distribution():
     timetables = {}
     win_timetables = {}
@@ -144,7 +145,6 @@ def is_necessary(t, label):
     if label == 'Logical Writing' and course.name == "논리적글쓰기":
         return True
     if label == 'AU' and course.au > 0:
-        print(course.name, "AU")
         return True
     if label == 'Basic Required' and course.classification == "기초필수":
         return True
@@ -189,15 +189,18 @@ def year_distribution():
     pass
 
 # 학생이 신청한 학점/당첨된 학점/실제 수강한 학점 분포
-#credit_compare()
+credit_compare()
 
 # 수업별 정원의 비율 분포
-#applicants_ratio()
+applicants_ratio()
 
 # 전공 / 복수전공 / 부전공 / 전공X 별
-# 수강신청 대비 당첨 비율  
-# get_major_list()
-# major_distribution()
+# 수강신청 대비 당첨 비율  (만족도)
+get_major_list()
+major_distribution()
+
+# TO-DO
+# 과목별 주전/복전/부전 신청 및 당첨 비율
 
 # 학년 별 수강신청 대비 당첨 비율 
 year_distribution()
