@@ -37,9 +37,6 @@ class RegistrationSystem:
         """
         return students
 
-    def register_students_with_restraints(self, students: List[Student]) -> List[Student]:
-        return students
-
 
 class LotterySystem(RegistrationSystem):
     def __init__(self, courses_dict: Dict[str, Course]) -> None:
@@ -70,13 +67,12 @@ class LotterySystem(RegistrationSystem):
         for student in students:
             for course in student.timetable:
                 self.registration_dict[course.code]["register_list"].append(student)
-
+                
         # Randomly select students from each course
         for code, register_info in self.registration_dict.items():
             course = register_info["course"]
             register_list = register_info["register_list"]
-            
-            self.courses_dict[code].num_applicants = len(register_list)
+            assert course.get_num_applicants() == len(register_list), "Number of applicants should be equal to number of students"
 
             if not course.is_lottery:
                 for student in register_list:
@@ -85,22 +81,12 @@ class LotterySystem(RegistrationSystem):
             else:
                 random.shuffle(register_list)
                 for i, student in enumerate(register_list):
-                    if i < course.capacity:
+                    if course.capacity == 0 or i < course.capacity:
                         student.add_to_final_timetable(course)
                     else:
                         break
-            
+        
         return students
-    
-    def register_students_with_restraints(self, students: List[Student]) -> List[Student]:
-        return students
-    
-
-# TODO: 코드가 길어질 경우 다른 코드로 이동
-class FCFSSystem(RegistrationSystem):
-    def __init__(self, courses: Dict[str, Course]) -> None:
-        super().__init__(courses)
-        # TODO: FCFS에 필요한 init 추가
     
 class PrioritizeSystem(LotterySystem):
     def __init__(self, courses: Dict[str, Course]) -> None:
@@ -131,10 +117,10 @@ class PrioritizeSystem(LotterySystem):
             for course in student.timetable:
                 is_major.append(course.major == student.major)
                 is_liberal_art.append(course.major == Major.HSS)
-                competition_rate.append(0 if course.capacity==0 else course.num_applicants/course.capacity)
+                competition_rate.append(0 if course.capacity==0 else course.get_num_applicants()/course.capacity)
 
-            is_major = np.array(is_major)
-            is_liberal_art = np.array(is_liberal_art)
+            is_major = np.array(is_major).astype(np.bool)
+            is_liberal_art = np.array(is_liberal_art).astype(np.bool)
             is_other = ~is_major & ~is_liberal_art
             competition_rate = np.array(competition_rate)
             new_order = np.arange(course_len)
@@ -197,9 +183,8 @@ class PrioritizeSystem(LotterySystem):
         for code, register_info in self.registration_dict.items():
             course = register_info["course"]
             register_list = register_info["register_list"]
+            assert course.get_num_applicants() == len(register_list), "Number of applicants should be equal to number of students"
             
-            self.courses_dict[code].num_applicants = len(register_list)
-
             if not course.is_lottery:
                 for student in register_list:
                     student.add_to_final_timetable(course)
@@ -266,9 +251,6 @@ class PrioritizeSystem(LotterySystem):
                         break
 
         return students
-    
-    def register_students_with_restraints(self, students: List[Student]) -> List[Student]:
-        return students
 
 
 class MajorPrioritySystem(RegistrationSystem):
@@ -306,8 +288,8 @@ class MajorPrioritySystem(RegistrationSystem):
         for code, register_info in self.registration_dict.items():
             course = register_info["course"]
             register_list = register_info["register_list"]
-
-            self.courses_dict[code].num_applicants = len(register_list)
+            
+            assert course.get_num_applicants() == len(register_list), "Number of applicants should be equal to number of students"
 
             if len(register_list) <= course.capacity or not course.is_lottery:
                 for student in register_list:
@@ -367,7 +349,4 @@ class MajorPrioritySystem(RegistrationSystem):
                     else:
                         break
 
-        return students
-
-    def register_students_with_restraints(self, students: List[Student]) -> List[Student]:
-        return students
+        return student

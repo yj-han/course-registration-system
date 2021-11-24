@@ -1,22 +1,23 @@
 import unittest
 
-from registration.course import Course
+from registration.course import Course, Semester
 from registration.major import Major
 from registration.registration_system import LotterySystem
 from registration.student import Degree, Student
 
 class TestRegistrationSystem(unittest.TestCase):
     def test_lottery_system(self):
+        semester = Semester.FALL
         # Course 1: does not need lottery
         course1 = Course(
             "Intro to Computer Science",
             "CS101",
             Major.CS,
             3,
-            3,
             None,
-            0,
             False,
+            semester,
+            3,            
             False
         )
         # Course 2: needs lottery        
@@ -24,11 +25,11 @@ class TestRegistrationSystem(unittest.TestCase):
             "Intro to Biology",
             "BS101",
             Major.BS,
-            3,
             1,
             None,
-            0,
             True,
+            semester,
+            3,
             False
         )
         # Course 3: no limit
@@ -36,13 +37,18 @@ class TestRegistrationSystem(unittest.TestCase):
             "Intro to Chemistry",
             "CH101",
             Major.CS,
-            3,
             0,
             None,
-            0,
             False,
+            semester,
+            3,
             False
         )
+        
+        course1.set_num_applicants(3)
+        course2.set_num_applicants(3)
+        course3.set_num_applicants(3)
+        
         courses_dict = {
             course1.code: course1, 
             course2.code: course2, 
@@ -53,6 +59,7 @@ class TestRegistrationSystem(unittest.TestCase):
                     2020, 
                     Degree.BACHELOR, 
                     Major.CS,
+                    None,
                     None, 
                     [course2, course1, course3],
                     [])
@@ -61,12 +68,14 @@ class TestRegistrationSystem(unittest.TestCase):
                     Degree.DOCTOR, 
                     Major.BS,
                     Major.EE, 
+                    None,
                     [course3, course1, course2],
                     [])
         student3 = Student("C", 
                     2021, 
-                    Degree.MASTER, 
+                    Degree.MASTER,
                     Major.PH,
+                    None,
                     Major.NQE, 
                     [course1, course2, course3],
                     [])
@@ -75,9 +84,9 @@ class TestRegistrationSystem(unittest.TestCase):
         # run the test
         lottery_system = LotterySystem(courses_dict)
         results = lottery_system.register_students(students)
-                    
+        
         for course in courses_dict.values():
-            self.assertEqual(course.num_applicants, 3)
+            self.assertEqual(course.get_num_applicants(), 3)
 
         sorted_results = sorted(results, key=lambda x: len(x.final_timetable))
         # only one student should be assigned to course 2

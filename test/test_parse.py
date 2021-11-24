@@ -19,7 +19,6 @@ class TestParse(unittest.TestCase):
             False,
             semester,
             3,
-            [],
             False
         )  
         expected_course2 = Course(
@@ -31,7 +30,6 @@ class TestParse(unittest.TestCase):
             False,
             semester,
             2,
-            [],
             False
         )
         expected_course3 = Course(
@@ -43,7 +41,6 @@ class TestParse(unittest.TestCase):
             True,
             semester,
             0,
-            [],
             True,
         )
         expected_course4 = Course(
@@ -55,7 +52,6 @@ class TestParse(unittest.TestCase):
             True,
             semester,
             3,
-            [],
             False
         )
 
@@ -118,11 +114,6 @@ class TestParse(unittest.TestCase):
         self.assertEqual(students_dict[expected_student2.id], expected_student2)
         self.assertEqual(students_dict[expected_student3.id], expected_student3)
         self.assertEqual(students_dict[expected_student4.id], expected_student4)
-
-        self.assertIn(expected_student1, courses_dict[registered_course_code1].applicants)
-        self.assertIn(expected_student2, courses_dict[registered_course_code2].applicants)
-        self.assertIn(expected_student3, courses_dict[registered_course_code3].applicants)
-        self.assertIn(expected_student4, courses_dict[registered_course_code4].applicants)
         
 if __name__ == "__main__":
     unittest.main()

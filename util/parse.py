@@ -107,6 +107,7 @@ def parse_student_file(filename: str, courses_dict: Dict[str, Course], semester:
         assert unique_code in courses_dict.keys()
         
         course = courses_dict[unique_code]
+        course.add_num_applicants()
         
         # Find the student
         id = row["가명학번"]
@@ -139,9 +140,6 @@ def parse_student_file(filename: str, courses_dict: Dict[str, Course], semester:
             continue
         else:
             students_dict[id].add_to_timetable(course)
-        
-        # Add applicants (Student) to course applicants list
-        courses_dict[unique_code].add_applicant(students_dict[id])
 
     return students_dict
 

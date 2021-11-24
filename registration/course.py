@@ -19,7 +19,6 @@ class Course:
                  is_lottery: bool,
                  semester: Semester = Semester.SPRING,
                  credit: int = 0,
-                 applicants = [],    # Removed type annotation to avoid circular import between course.py and student.py
                  is_au: bool = False,
 ) -> None:
         """Initialization of Course. 
@@ -34,10 +33,9 @@ class Course:
             is_lottery (bool): is lottery of course
             semester (Semester, optional): semester of course. Defaults to SPRING.            
             *credit (int, optional): credit of course. Defaults to 0.
-            *applicants (List[Student], optional): applicants of course. Defaults to [].
             *is_au (bool, optional): is_au of course. Defaults to False.
         """
-        assert capacity >= 0 and len(applicants) >= 0
+        assert capacity >= 0
         
         self.name = name
         self.code = code    # Course code used here should be unique
@@ -47,18 +45,20 @@ class Course:
         self.is_lottery = is_lottery        
         self.semester = semester
         self.credit = credit
-        self.applicants = applicants
         self.is_au = is_au
+        self.__num_applicants = 0
+        
+    def add_num_applicants(self) -> None:
+        self.__num_applicants += 1
+        
+    def get_num_applicants(self) -> int:
+        return self.__num_applicants
 
-        self.num_applicants = len(applicants)
-
-    def add_applicant(self, applicant) -> None:
-        """Add applicant to course."""
-        self.num_applicants += 1
-        self.applicants.append(applicant)
+    def set_num_applicants(self, num_applicants: int) -> None:
+        self.__num_applicants = num_applicants
 
     def __str__(self) -> str:
-        return f"{self.name} \n\t code: {self.code} \n\t major: {self.major} \n\t capacity: {self.capacity} \n\t division: {self.division} \n\t is_lottery: {self.is_lottery} \n\t semester: {self.semester} \n\t credit: {self.credit} \n\t num_applicants: {self.num_applicants} \n\t is_au: {self.is_au}"
+        return f"{self.name} \n\t code: {self.code} \n\t major: {self.major} \n\t capacity: {self.capacity} \n\t division: {self.division} \n\t is_lottery: {self.is_lottery} \n\t semester: {self.semester} \n\t credit: {self.credit} \n\t num_applicants: {self.get_num_applicants()} \n\t is_au: {self.is_au}"
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Course):
@@ -72,7 +72,6 @@ class Course:
             and self.is_lottery == other.is_lottery \
             and self.semester == other.semester \
             and self.credit == other.credit \
-            and self.num_applicants == other.num_applicants \
             and self.is_au == other.is_au
                 
         return is_equal
