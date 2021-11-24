@@ -71,17 +71,17 @@ class LotterySystem(RegistrationSystem):
         # Randomly select students from each course
         for code, register_info in self.registration_dict.items():
             course = register_info["course"]
-            reigister_list = register_info["register_list"]
+            register_list = register_info["register_list"]
             
-            self.courses_dict[code].num_applicants = len(reigister_list)
+            self.courses_dict[code].num_applicants = len(register_list)
 
             if not course.is_lottery:
-                for student in reigister_list:
+                for student in register_list:
                     student.add_to_final_timetable(course)
                 continue
             else:
-                random.shuffle(reigister_list)
-                for i, student in enumerate(reigister_list):
+                random.shuffle(register_list)
+                for i, student in enumerate(register_list):
                     if i < course.capacity:
                         student.add_to_final_timetable(course)
                     else:
