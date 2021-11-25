@@ -1,9 +1,10 @@
 import copy
+from registration.course import Semester
 from registration.registration_system import *
-from util.parse import parse_course_file, parse_student_file
+from util.parse import parse_course_file, parse_student_file, generate_course_type_enum
 
 if __name__ == "__main__":
-    courses_dict = parse_course_file("2021 정규학기 과목별 추첨여부")
+    courses_dict = parse_course_file("2021 정규학기 과목별 추첨여부", "2021 봄학기 과목.xls", Semester.SPRING)
     students_dict = parse_student_file("2021 정규학기 수강신청 내역", courses_dict)
     
     students = list(students_dict.values())

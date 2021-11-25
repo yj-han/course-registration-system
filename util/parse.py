@@ -4,7 +4,7 @@ from pathlib import Path
 
 from registration.major import Major
 from registration.student import Degree, Student
-from registration.course import Course, Semester
+from registration.course import Course, CourseType, Semester
 
 # Constants
 DATA_PATH = "./data/"
@@ -51,7 +51,7 @@ def parse_course_file(filename: str, credit_filename: str, semester: Semester) -
         
         course = Course(
             name, 
-            unique_code, 
+            unique_code,
             major, 
             capacity,
             division, 
@@ -63,6 +63,7 @@ def parse_course_file(filename: str, credit_filename: str, semester: Semester) -
     # Fill out Course's `credit` and `is_au` using credit_df
     for _, row in credit_df.iterrows():
         code = row["과목번호"].strip()
+        course_type = CourseType.value_of(row["과목구분"])
         division = str(row["분반"]).strip() if not pd.isna(row["분반"]) else None
         unique_code = code + division if division else code
         
@@ -71,6 +72,7 @@ def parse_course_file(filename: str, credit_filename: str, semester: Semester) -
         
         courses_dict[unique_code].credit = credit
         courses_dict[unique_code].is_au = is_au
+        courses_dict[unique_code].course_type = course_type
 
     return courses_dict
 
@@ -163,3 +165,54 @@ def generate_major_enum(filename: str):
     for key, value in major_dict.items():
         print(value, "=", f'"{key}"')
 
+
+def generate_course_type_enum(filename: str, semester: Semester):
+    """Generate course type enums using `filename` and `semester`
+
+    Args:
+        filename (str): an excel file holding course information
+        semester (Semester): the semester to use
+    """
+    data_path = Path(DATA_PATH)
+    file_path = data_path / filename
+
+    assert file_path.exists()
+    
+    sheet_name = "2021 봄" if semester == Semester.SPRING else "2021 가을"
+    engine = "openpyxl" if file_path.suffix == ".xlsx" else "xlrd"
+    
+    df = pd.read_excel(file_path, engine=engine)
+    
+    course_type_dict = dict()
+    for _, row in df.iterrows():
+        value = row["과목구분"].strip()
+        if "필수" in value:
+            key = "REQUIRED"
+        if "선택" in value:
+            key = "ELECTIVE"            
+            
+        if "전공" in value:
+            key = "MAJOR" + "_" + key
+        if  "교양" in value:
+            key = "LIBERAL_ARTS" + "_" + key
+        if "자유" in value:
+            key = "UNRESTRICTED" + "_" + key
+        if "기초" in value:
+            key = "BASIC" + "_" + key
+        if "공통" in value:
+            key = "COMMON" + "_" + key
+
+        if "연구" in value:
+            key = "RESEARCH"
+            value = "연구"
+        if "세미나" in value:
+            key = "SEMINAR"
+            value = "세미나"
+        if key == "ELECTIVE":
+            key = "ELSE"
+            value = "기타"
+
+        course_type_dict[key] = value
+    
+    for key, value in course_type_dict.items():
+        print(f'{key} = "{value}"')

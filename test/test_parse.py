@@ -1,6 +1,6 @@
 import unittest
 
-from registration.course import Course, Semester
+from registration.course import Course, CourseType, Semester
 from registration.major import Major
 from registration.student import Degree, Student
 from util.parse import parse_course_file, parse_student_file
@@ -19,7 +19,8 @@ class TestParse(unittest.TestCase):
             False,
             semester,
             3,
-            False
+            False,
+            CourseType.RESEARCH
         )  
         expected_course2 = Course(
             "Intermediate English Reading & Writing",
@@ -30,7 +31,8 @@ class TestParse(unittest.TestCase):
             False,
             semester,
             2,
-            False
+            False,
+            CourseType.UNRESTRICTED_ELECTIVE
         )
         expected_course3 = Course(
             "체력육성",
@@ -42,21 +44,24 @@ class TestParse(unittest.TestCase):
             semester,
             0,
             True,
+            CourseType.LIBERAL_ARTS_REQUIRED            
         )
         expected_course4 = Course(
             "역사학 특강<고고학 발굴과 분석의 이해>",
             "HSS304A",
             Major.HSS,
             30,
-            "A",            
+            "A",
             True,
             semester,
             3,
-            False
+            False,
+            CourseType.LIBERAL_ARTS_ELECTIVE
         )
 
-        courses_dict = parse_course_file("2021 정규학기 과목별 추첨여부.xlsx", "2021 가을학기 과목.xls", Semester.FALL)
-        
+        courses_dict = parse_course_file("2021 정규학기 과목별 추첨여부.xlsx", "2021 가을학기 과목.xls", semester)
+
+        print(courses_dict[expected_course2.code])
         self.assertEqual(courses_dict[expected_course1.code], expected_course1)
         self.assertEqual(courses_dict[expected_course2.code], expected_course2)
         self.assertEqual(courses_dict[expected_course3.code], expected_course3)

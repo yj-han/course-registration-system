@@ -1,7 +1,7 @@
 import unittest
 import copy
 
-from registration.course import Course, Semester
+from registration.course import Course, CourseType, Semester
 from registration.major import Major
 from registration.registration_system import LotterySystem
 from registration.registration_system import GradePrioritySystem
@@ -21,7 +21,8 @@ class TestRegistrationSystem(unittest.TestCase):
             False,
             SEMESTER,
             3,            
-            False
+            False,
+            CourseType.MAJOR_REQUIRED
         )
         # Course 2: needs lottery        
         course2 = Course(
@@ -33,7 +34,8 @@ class TestRegistrationSystem(unittest.TestCase):
             True,
             SEMESTER,
             3,
-            False
+            False,
+            CourseType.MAJOR_REQUIRED
         )
         # Course 3: no limit
         course3 = Course(
@@ -45,7 +47,8 @@ class TestRegistrationSystem(unittest.TestCase):
             False,
             SEMESTER,
             3,
-            False
+            False,
+            CourseType.MAJOR_REQUIRED
         )
         
         course1.set_num_applicants(3)
@@ -111,19 +114,21 @@ class TestRegistrationSystem(unittest.TestCase):
             False,
             SEMESTER,
             3,            
-            False
+            False,
+            CourseType.MAJOR_REQUIRED,
         )
         # Course 2: needs lottery        
         course2 = Course(
             "Intro to Biology",
-            "BS101",
+            "BS101",         
             Major.BS,
             1,
             None,
             True,
             SEMESTER,
             3,
-            False
+            False,
+            CourseType.MAJOR_REQUIRED,   
         )
         # Course 3: no limit
         course3 = Course(
@@ -135,7 +140,8 @@ class TestRegistrationSystem(unittest.TestCase):
             False,
             SEMESTER,
             3,
-            False
+            False,
+            CourseType.MAJOR_REQUIRED
         )
         
         course1.set_num_applicants(9)
@@ -254,7 +260,8 @@ class TestRegistrationSystem(unittest.TestCase):
             False,
             SEMESTER,
             3,            
-            False
+            False,
+            CourseType.MAJOR_REQUIRED
         )
         course1.set_num_applicants(3)
 
@@ -268,7 +275,8 @@ class TestRegistrationSystem(unittest.TestCase):
             False,
             SEMESTER,            
             3,            
-            False
+            False,
+            CourseType.MAJOR_ELECTIVE
         )
         course2.set_num_applicants(5)
         
@@ -282,7 +290,8 @@ class TestRegistrationSystem(unittest.TestCase):
             True,            
             SEMESTER,            
             3,
-            False
+            False,
+            CourseType.MAJOR_ELECTIVE
         )
         course3.set_num_applicants(5)
         
@@ -296,7 +305,8 @@ class TestRegistrationSystem(unittest.TestCase):
             True,
             SEMESTER,
             3,            
-            False
+            False,
+            CourseType.LIBERAL_ARTS_ELECTIVE            
         )
         course4.set_num_applicants(5)
         # Course 5: needs lottery - Other
@@ -309,7 +319,8 @@ class TestRegistrationSystem(unittest.TestCase):
             True,            
             SEMESTER,
             3,
-            False
+            False,
+            CourseType.BASIC_ELECTIVE            
         )
         course5.set_num_applicants(5)
 
