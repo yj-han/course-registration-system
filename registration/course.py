@@ -6,6 +6,14 @@ from registration.major import Major
 class Semester(Enum):
     SPRING = "봄"
     FALL = "가을"
+    
+
+class CourseType(Enum):
+    LECTURE = "강의"
+    LAB = "실습"
+    PRACTICE = "실기"
+    PROJECT = "자료"
+    OTHER = "기타"
 
     
 class Course:
