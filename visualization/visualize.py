@@ -33,15 +33,15 @@ def credit_distribution():
                 credits.append(wish_credit)
                 win_credits.append(win_credit)
     
-    args = dict(alpha = 0.5, bins = 100)
     plt.clf()
-    plt.figure(figsize=(12,8))
+    plt.figure(figsize=(8,8))
+    args = dict(alpha = 0.5, bins = int(max(win_credits))+1)
     plt.hist(win_credits, **args, color="r", label = "win credits")
+    args = dict(alpha = 0.5, bins = int(max(credits))+1)
     plt.hist(credits, **args, color="g", label = "wish credits")
-    plt.xlim(0, 24)
-    plt.legend()
-    # plt.show()
-    plt.savefig('visualization/result/credit_comparison.png', dpi=300)
+    plt.xlim(0, int(max(credits)))
+    plt.legend
+    plt.savefig('visualization/result/credit_distribution.png', dpi=300)
 
 def credit_comparison_ratio():
     ratios = []
@@ -49,17 +49,15 @@ def credit_comparison_ratio():
         if s.degree == Degree.BACHELOR:
             wish_credit = sum_credits(s.timetable)
             win_credit = sum_credits(s.win_timetable)
-            print(s.timetable, s.win_timetable)
             if (wish_credit > 0):
                 ratios.append(win_credit / wish_credit * 100)
-    print(ratios[:10])
-    args = dict(alpha = 0.5, bins = 100)
+    args = dict(alpha = 0.5)
     plt.clf()
     plt.figure(figsize=(12,8))
     plt.hist(ratios, **args, color="r", label = "ratios")
     plt.legend()
-    plt.show()
-    #plt.savefig('visualization/result/credit_comparison.png', dpi=300)
+    #plt.show()
+    plt.savefig('visualization/result/credit_comparison.png', dpi=300)
 
 def applicants_ratio():
     args = dict(alpha = 0.5, bins = 100)
@@ -72,7 +70,7 @@ def applicants_ratio():
     plt.figure(figsize=(12,8)) 
     plt.hist(ratios, **args, color="g", label = "# of applicants / capacity")
     plt.legend()
-    # plt.show()
+    #plt.show()
     plt.savefig('visualization/result/applicants_capacity_ratio.png', dpi=300)
 
 def get_major_list():
@@ -173,8 +171,9 @@ def is_necessary(t, label):
 
 def year_distribution():
     labels = ['Logical Writing', 'AU', 'Basic Required', 'lottery']
-    ratio_results = [[] for i in range(5)]
+    
     for j in range(len(labels)):
+        y = [[] for i in range(5)]
         label = labels[j]
         timetables = {}
         win_timetables = {}
@@ -184,7 +183,7 @@ def year_distribution():
 
         for s in students:
             year =  2022 - int(s.year)
-            if (year>5):
+            if year > 5:
                 year = 5
             for t in s.timetable:
                 if is_necessary(t, label):
@@ -194,34 +193,34 @@ def year_distribution():
                     win_timetables[year] +=1
         for i in range(1, 6):
             if (timetables[i] == 0):
-                ratio_results[i-1].append(0)
+                y[i-1].append(0)
             else:
-                ratio_results[i-1].append(win_timetables[i] / timetables[i] * 100)
+                y[i-1].append(win_timetables[i] / timetables[i] * 100)
+        x = list(range(1, 6))
+        plt.clf()
+        plt.plot(x, y)
+        plt.xlim([1, 5])
+        plt.ylim([0, 100])
+        plt.xlabel("year")
+        plt.ylabel("# of Win / # of Wish")
+        plt.title("Win rate for different year")
+        plt.savefig('visualization/result/win_rate_for_year_'+label+'.png', dpi = 300)
     
-    x = numpy.arange(len(labels))
-    plt.clf()
-    plt.figure(figsize=(12,8))
-    for i in range(5):
-        plt.bar(x+i/10, ratio_results[i], label=str(i+1), width=0.1)
-    plt.xticks(x+0.25, labels)
-    plt.savefig('visualization/result/ratio_per_years.png', dpi=300)
-    pass
-
 # 학생이 신청한 학점 / 당첨된 학점 / 실제 수강한 학점 분포
-#credit_distribution()
+credit_distribution()
 
 # 학생이 신청한 학점 대비 당첨된 학점.
 credit_comparison_ratio()
 
 # 수업별 정원의 비율 분포
-#applicants_ratio()
+applicants_ratio()
 
 # 전공 / 복수전공 / 부전공 / 전공X 별
 # 수강신청 대비 당첨 비율  (만족도)
-#get_major_list()
-#major_distribution()
+get_major_list()
+major_distribution()
 
 # 과목별 주전/복전/부전 신청 및 당첨 비율
 
 # 학년 별 수강신청 대비 당첨 비율 
-#year_distribution()
+year_distribution()
