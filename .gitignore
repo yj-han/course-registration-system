@@ -138,6 +138,7 @@ dmypy.json
 cython_debug/
 
 *.xlsx
+*.xls
 *.pickle
 .idea/
 .DS_Store
