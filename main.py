@@ -32,5 +32,5 @@ if __name__ == "__main__":
     prioritized_students = top3_priority_system.designate_priority(copy.deepcopy(students), (0.5, 0.4, 0.1))
     result_students = top3_priority_system.register_students(prioritized_students, (0.2, 0.2, 0.2))
     results['top3 priority'] = result_students
-
+    
     evaluation(results)

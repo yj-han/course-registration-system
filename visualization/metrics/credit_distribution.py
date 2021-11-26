@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 from registration.student import Degree
 from visualization.color import COLOR
@@ -9,7 +10,10 @@ def sum_credits(timetable):
         credits += course.credit
     return credits
 
-def credit_distribution(results, df):
+def credit_distribution(results):
+    # save the value % of students who finally get over 9 credits
+    df = pd.DataFrame(index=['wish']+list(results.keys()))
+
     plt.clf()
     plt.figure(figsize=(8,8))
     # get wish credit
@@ -60,7 +64,7 @@ def credit_distribution(results, df):
     plt.legend(loc='upper right')
     plt.savefig('result/credit_distribution.png', dpi=300)
 
-    return df
+    print(df)
 
 def credit_comparison_ratio(results):
     ratios = []

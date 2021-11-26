@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from visualization.metrics.credit_distribution import credit_comparison_ratio, credit_distribution
 from visualization.metrics.major_prioirty import major_satisfaction, major_distribution
-from visualization.metrics.year_priority import year_distribution
+from visualization.metrics.grade_priority import grade_distribution
 import pandas as pd
 
 def check(results):
@@ -13,13 +13,11 @@ def check(results):
             sum += len(s.final_timetable)
         print(sum, system)
     
-def evaluation(results):   
-
-    df = pd.DataFrame(index=['wish']+list(results.keys()))
+def evaluation(results):       
     # 학생이 신청한 학점 / 당첨된 학점 / 실제 수강한 학점 분포
-    df = credit_distribution(results, df)
+    credit_distribution(results)
 
-    # # 학생이 신청한 학점 대비 당첨된 학점.
+    # TO-DO : 학생이 신청한 학점 대비 당첨된 학점.
     # credit_comparison_ratio(results)
 
     # 전공 / 복수전공 / 부전공 / 전공X 별
@@ -30,6 +28,4 @@ def evaluation(results):
     major_distribution(results)
 
     # # 학년 별 수강신청 대비 당첨 비율 
-    # year_distribution(results)
-
-    print(df)
+    grade_distribution(results)
