@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from registration.student import Degree
 from visualization.color import COLOR
 
