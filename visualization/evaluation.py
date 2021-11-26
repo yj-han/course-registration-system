@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from visualization.metrics.credit_distribution import credit_comparison_ratio, credit_distribution
-from visualization.metrics.major_prioirty import major_satisfaction
+from visualization.metrics.major_prioirty import major_satisfaction, major_distribution
 from visualization.metrics.year_priority import year_distribution
 import pandas as pd
 
@@ -27,6 +27,7 @@ def evaluation(results):
     major_satisfaction(results)
 
     # 과목별 주전/복전/부전 신청 및 당첨 비율
+    major_distribution(results)
 
     # # 학년 별 수강신청 대비 당첨 비율 
     # year_distribution(results)

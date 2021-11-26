@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from registration.student import Degree
 from registration.major import Major
 from visualization.color import COLOR
@@ -87,3 +88,45 @@ def major_satisfaction(results):
         plt.title("Major satisfaction for "+major_name+" major")
         plt.legend()
         plt.savefig('result/major_satisfaction_'+major_name+'_major.png', dpi=300)
+
+def major_distribution(results):
+    systems = list(results.keys())
+    wish = {}
+    final = {}
+    for major in majors:
+        wish[major] = pd.DataFrame(columns=['system','major', 'double_major', 'minor', 'no_major'])
+        final[major] = pd.DataFrame(columns=['system','major', 'double_major', 'minor', 'no_major'])
+    for system in systems:
+        timetables = {}
+        final_timetables = {}
+        students = results[system]
+        for s in students:
+            timetables = timetable_per_major(s, s.timetable, timetables)
+            final_timetables = timetable_per_major(s, s.final_timetable, final_timetables)
+        for major in majors:
+            timetables[major]['system'] = 'wish'
+            final_timetables[major]['system'] = system
+            if final[major].empty:
+                final[major] = final[major].append(timetables[major], ignore_index=True)
+            final[major] = final[major].append(final_timetables[major], ignore_index=True)
+
+    ## 각 전공 별 주전/복전/부전 각각의 만족도 그래프
+    for major in majors:
+        x = np.arange(len(systems)+1)
+        plt.clf()
+        plt.figure(figsize=(16,8))
+        plt.grid(True, axis='y')
+
+        df = final[major]
+        plt.bar(x, df['major'], color = 'r', width=0.2, label='major')
+        plt.bar(x, df['double_major'],  bottom = df['major'], color = 'g', width=0.2, label='double major')
+        plt.bar(x, df['minor'], bottom = df['major']+df['double_major'], color = 'b', width=0.2, label='minor')
+        plt.bar(x, df['no_major'], bottom =  df['major']+df['double_major']+df['minor'], color = 'c', width=0.2, label='non major')
+
+        plt.xticks(x, ['wish']+systems)
+        plt.xlabel('system', fontsize = 25)
+        plt.ylabel('# of students', fontsize = 25)
+        major_name = str(major).removeprefix('Major.')
+        plt.legend()
+        plt.title("Major distribution for "+major_name+" major")
+        plt.savefig('result/major_distribution_'+major_name+'_major.png', dpi=300)
