@@ -66,18 +66,21 @@ def credit_distribution(results):
 
     print(df)
 
+
+## TO-DO 아직 수정 필요
+
 def credit_comparison_ratio(results):
-    ratios = []
-    for s in students[:10]:
-        if s.degree == Degree.BACHELOR:
-            wish_credit = sum_credits(s.timetable)
-            final_credit = sum_credits(s.final_timetable)
-            if (wish_credit > 0):
-                ratios.append(final_credit / wish_credit * 100)
-    args = dict(alpha = 0.5)
-    plt.clf()
-    plt.figure(figsize=(12,8))
-    plt.hist(ratios, **args, color="r", label = "ratios")
-    plt.legend()
-    #plt.show()
-    plt.savefig('visualization/result/credit_comparison.png', dpi=300)
+    # ratios = []
+    # for s in students[:10]:
+    #     if s.degree == Degree.BACHELOR:
+    #         wish_credit = sum_credits(s.timetable)
+    #         final_credit = sum_credits(s.final_timetable)
+    #         if (wish_credit > 0):
+    #             ratios.append(final_credit / wish_credit * 100)
+    # args = dict(alpha = 0.5)
+    # plt.clf()
+    # plt.figure(figsize=(12,8))
+    # plt.hist(ratios, **args, color="r", label = "ratios")
+    # plt.legend()
+    # #plt.show()
+    # plt.savefig('visualization/result/credit_comparison.png', dpi=300)

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+# 전체 과목에 대한  정보인데 아직 수정 필요
 def applicants_ratio(courses):
     args = dict(alpha = 0.5, bins = 100)
 

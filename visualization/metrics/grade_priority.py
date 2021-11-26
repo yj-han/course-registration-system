@@ -12,7 +12,7 @@ def is_necessary(course, label):
         return True
     return False
 
-def grade_distribution(results):
+def grade_satisfaction(results):
     labels = ['Logical Writing', 'AU', 'Basic Required', 'All']
     for label in labels:
         plt.clf()
