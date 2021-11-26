@@ -33,7 +33,7 @@ class Student:
                  major: Major,
                  double_major: Optional[Major] = None,
                  minor: Optional[Major] = None, 
-                 timetable: List[Course] = [], 
+                 timetable: List[Course] = [],
                  final_timetable: List[Course] = []) -> None:
         """Initialization of Student
 
@@ -42,6 +42,7 @@ class Student:
             year (int): year of entrance
             degree (Degree): level of degree
             major (Major): major of student
+            double_major (Optional[Major]): double_major if exists else None            
             minor (Optional[Major]): minor if exists else None
             timetable (List[Course]): a list of courses registered
             final_timetable (List[Course]): a list of courses finally set
@@ -61,7 +62,7 @@ class Student:
         Args:
             course (Course): course to add
         """
-        self.timetable.append(course)    
+        self.timetable.append(course)
 
     def add_to_final_timetable(self, course: Course) -> None:
         """Add course to final timetable
@@ -72,8 +73,20 @@ class Student:
         self.final_timetable.append(course)
     
     def __str__(self) -> str:
-        return f"""id: {self.id}, year: {self.year}, degree: {self.degree}, 
-            major: {self.major}, # timetable: {len(self.timetable)},  # final timetable: {len(self.final_timetable)}"""
+        return f"{self.id} \n\t year: {self.year} \n\t degree: {self.degree} \n\t major: {self.major} \n\t length of timetable: {len(self.timetable)} \n\t length of final timetable: {len(self.final_timetable)}"
+    
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Student):
+            return False
         
+        is_equal = self.id == other.id \
+            and self.year == other.year \
+            and self.degree == other.degree \
+            and self.major == other.major \
+            and self.double_major == other.double_major \
+            and self.minor == other.minor
+        
+        return is_equal
+    
     def __repr__(self):
         return str(self)

@@ -1,13 +1,14 @@
 import unittest
 import copy
 
-from registration.course import Course
+from registration.course import Course, CourseType, Semester
 from registration.major import Major
 from registration.registration_system import LotterySystem
 from registration.registration_system import GradePrioritySystem
 from registration.registration_system import Top3PrioritySystem
 from registration.student import Degree, Student
 
+SEMESTER = Semester.FALL
 class TestRegistrationSystem(unittest.TestCase):
     def test_lottery_system(self):
         # Course 1: does not need lottery
@@ -16,36 +17,44 @@ class TestRegistrationSystem(unittest.TestCase):
             "CS101",
             Major.CS,
             3,
-            3,
             None,
-            0,
             False,
-            False
+            SEMESTER,
+            3,            
+            False,
+            CourseType.MAJOR_REQUIRED
         )
         # Course 2: needs lottery        
         course2 = Course(
             "Intro to Biology",
             "BS101",
             Major.BS,
-            3,
             1,
             None,
-            0,
             True,
-            False
+            SEMESTER,
+            3,
+            False,
+            CourseType.MAJOR_REQUIRED
         )
         # Course 3: no limit
         course3 = Course(
             "Intro to Chemistry",
             "CH101",
             Major.CS,
-            3,
             0,
             None,
-            0,
             False,
-            False
+            SEMESTER,
+            3,
+            False,
+            CourseType.MAJOR_REQUIRED
         )
+        
+        course1.set_num_applicants(3)
+        course2.set_num_applicants(3)
+        course3.set_num_applicants(3)
+        
         courses_dict = {
             course1.code: course1,
             course2.code: course2, 
@@ -56,7 +65,7 @@ class TestRegistrationSystem(unittest.TestCase):
                     2020, 
                     Degree.BACHELOR, 
                     Major.CS,
-                    None, 
+                    None,
                     None, 
                     [course2, course1, course3],
                     [])
@@ -65,12 +74,12 @@ class TestRegistrationSystem(unittest.TestCase):
                     Degree.DOCTOR, 
                     Major.BS,
                     Major.EE, 
-                    None, 
+                    None,
                     [course3, course1, course2],
                     [])
         student3 = Student("C", 
                     2021, 
-                    Degree.MASTER, 
+                    Degree.MASTER,
                     Major.PH,
                     Major.NQE, 
                     None, 
@@ -81,9 +90,9 @@ class TestRegistrationSystem(unittest.TestCase):
         # run the test
         lottery_system = LotterySystem(courses_dict)
         results = lottery_system.register_students(students)
-                    
+        
         for course in courses_dict.values():
-            self.assertEqual(course.num_applicants, 3)
+            self.assertEqual(course.get_num_applicants(), 3)
 
         sorted_results = sorted(results, key=lambda x: len(x.final_timetable))
         # only one student should be assigned to course 2
@@ -101,36 +110,44 @@ class TestRegistrationSystem(unittest.TestCase):
             "CS101",
             Major.CS,
             3,
-            9,
             None,
-            0,
             False,
-            False
+            SEMESTER,
+            3,            
+            False,
+            CourseType.MAJOR_REQUIRED,
         )
-        # Course 2: needs lottery
+        # Course 2: needs lottery        
         course2 = Course(
             "Intro to Biology",
-            "BS101",
+            "BS101",         
             Major.BS,
-            3,
-            4,
+            1,
             None,
-            0,
             True,
-            False
+            SEMESTER,
+            3,
+            False,
+            CourseType.MAJOR_REQUIRED,   
         )
         # Course 3: no limit
         course3 = Course(
             "Intro to Chemistry",
             "CH101",
             Major.CS,
-            3,
             0,
             None,
-            0,
             False,
-            False
+            SEMESTER,
+            3,
+            False,
+            CourseType.MAJOR_REQUIRED
         )
+        
+        course1.set_num_applicants(9)
+        course2.set_num_applicants(9)
+        course3.set_num_applicants(9)
+        
         courses_dict = {
             course1.code: course1,
             course2.code: course2,
@@ -223,6 +240,7 @@ class TestRegistrationSystem(unittest.TestCase):
             self.assertIn(course3, student.final_timetable)
             if course2 in student.final_timetable:
                 lucky_students.append(student)
+
         self.assertEqual(len(lucky_students), course2.capacity)
 
         priority_count = 0
@@ -238,60 +256,73 @@ class TestRegistrationSystem(unittest.TestCase):
             "CS101",
             Major.CS,
             3,
-            3,
             None,
-            3,
             False,
-            False
+            SEMESTER,
+            3,            
+            False,
+            CourseType.MAJOR_REQUIRED
         )
+        course1.set_num_applicants(3)
+
         # Course 2: no limit
         course2 = Course(
             "Programming Principles",
             "CS220",
             Major.CS,
-            3,
             0,
             None,
-            5,
             False,
-            False
+            SEMESTER,            
+            3,            
+            False,
+            CourseType.MAJOR_ELECTIVE
         )
+        course2.set_num_applicants(5)
+        
         # Course 3: needs lottery - Major
         course3 = Course(
             "System Programming",
             "CS230",
             Major.CS,
             3,
-            3,
             None,
-            5,
-            True,
-            False
+            True,            
+            SEMESTER,            
+            3,
+            False,
+            CourseType.MAJOR_ELECTIVE
         )
+        course3.set_num_applicants(5)
+        
         # Course 4: needs lottery - Liberal Art
         course4 = Course(
             "Spanish Conversation",
             "HSS179",
             Major.HSS,
             3,
-            3,
             None,
-            5,
             True,
-            False
+            SEMESTER,
+            3,            
+            False,
+            CourseType.LIBERAL_ARTS_ELECTIVE            
         )
+        course4.set_num_applicants(5)
         # Course 5: needs lottery - Other
         course5 = Course(
             "Basics of Artificial Intelligence<Physical AI>",
             "CoE202",
             Major.CoE,
             3,
-            3,
             None,
-            5,
-            True,
-            False
+            True,            
+            SEMESTER,
+            3,
+            False,
+            CourseType.BASIC_ELECTIVE            
         )
+        course5.set_num_applicants(5)
 
         courses_dict = {
             course1.code: course1, 
@@ -326,20 +357,20 @@ class TestRegistrationSystem(unittest.TestCase):
         results = prioritize_system.register_students(prioritized_students, (0.2, 0.2, 0.2))
                     
         for course in [course1]:
-            self.assertEqual(course.num_applicants, 3)
+            self.assertEqual(course.get_num_applicants(), 3)
         for course in [course2, course3, course4, course5]:
-            self.assertEqual(course.num_applicants, 5)
+            self.assertEqual(course.get_num_applicants(), 5)
 
-        applicants_dict = {course1:0, course2:0, course3:0, course4:0, course5:0}
+        applicants_dict = {course1.code:0, course2.code:0, course3.code:0, course4.code:0, course5.code:0}
 
         for student in results:
             for course in student.final_timetable:
-                applicants_dict[course] += 1
+                applicants_dict[course.code] += 1
 
         for course in [course2]: # no limit case
-            self.assertEqual(applicants_dict[course], 5)
+            self.assertEqual(applicants_dict[course.code], 5)
         for course in [course1, course3, course4, course5]:
-            self.assertEqual(applicants_dict[course], 3)
+            self.assertEqual(applicants_dict[course.code], 3)
 
 
 if __name__ == "__main__":
