@@ -2,10 +2,12 @@ import matplotlib.pyplot as plt
 from visualization.metrics.credit_distribution import credit_comparison_ratio, credit_distribution
 from visualization.metrics.major_prioirty import major_distribution
 from visualization.metrics.year_priority import year_distribution
+import pandas as pd
 
 def evaluation(results):
+    df = pd.DataFrame(index=['wish']+list(results.keys()))
     # 학생이 신청한 학점 / 당첨된 학점 / 실제 수강한 학점 분포
-    credit_distribution(results)
+    df = credit_distribution(results, df)
 
     # 학생이 신청한 학점 대비 당첨된 학점.
     credit_comparison_ratio(results)

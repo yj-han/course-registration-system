@@ -136,6 +136,7 @@ def parse_student_file(filename: str, courses_dict: Dict[str, Course], semester:
                 double_major,
                 minor,
                 timetable,
+                []
             )
             
             students_dict[id] = student
