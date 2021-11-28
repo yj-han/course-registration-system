@@ -13,6 +13,8 @@ def sum_credits(timetable):
 def credit_distribution(results):
     # save the value % of students who finally get over 9 credits
     df = pd.DataFrame(index=['wish']+list(results.keys()))
+    # maximum credit that is shown in the graph
+    MAX_CREDIT = 25
 
     plt.clf()
     plt.figure(figsize=(8,8))
@@ -34,9 +36,10 @@ def credit_distribution(results):
     
     df.loc['wish', ">= 9 credits (%)"] = round(over_standard / all_students * 100, 2)
 
-    bins = int(max(wish_credits)/3)
+    
+    bins = int(MAX_CREDIT)
     histogram, _ = np.histogram(wish_credits, bins = bins)
-    plt.plot(range(bins), list(histogram), color=COLOR.ELSE, alpha = 0.5, label = "wish credits")
+    plt.plot(range(bins), list(histogram[:MAX_CREDIT]), color=COLOR.ELSE, alpha = 0.5, label = "wish credits")
     
     # get win credit for each system
     for system in results:
@@ -53,13 +56,13 @@ def credit_distribution(results):
                     over_standard += 1
 
         df.loc[system, ">= 9 credits (%)"] = round(over_standard / all_students * 100, 2)
-
-        bins = int(max(final_credits)/3)
-        histogram, _ = np.histogram(final_credits, bins = bins)
-        plt.plot(range(bins), list(histogram), color=COLOR.value_of(system), label = "win credits of "+system+" system")
         
-    plt.xticks(range(bins), [i*3 for i in range(bins)])
-    plt.xlabel("credits of final timetable")
+        bins = int(MAX_CREDIT)
+        histogram, _ = np.histogram(final_credits, bins = bins)
+        plt.plot(range(bins), list(histogram[:MAX_CREDIT]), color=COLOR.value_of(system), label = "win credits of "+system+" system")
+        
+    plt.xticks(range(bins))
+    plt.xlabel("Credits of final timetable")
     plt.ylabel("# of students")
     plt.legend(loc='upper right')
     plt.savefig('result/credit_distribution.png', dpi=300)
@@ -84,3 +87,4 @@ def credit_comparison_ratio(results):
     # plt.legend()
     # #plt.show()
     # plt.savefig('visualization/result/credit_comparison.png', dpi=300)
+    pass

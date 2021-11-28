@@ -124,9 +124,9 @@ def major_distribution(results):
         plt.bar(x, df['no_major'], bottom =  df['major']+df['double_major']+df['minor'], color = 'c', width=0.2, label='non major')
 
         plt.xticks(x, ['wish']+systems)
-        plt.xlabel('system', fontsize = 25)
-        plt.ylabel('# of students', fontsize = 25)
+        plt.xlabel('System', fontsize = 12)
+        plt.ylabel('# of students', fontsize = 12)
         major_name = str(major).removeprefix('Major.')
         plt.legend()
-        plt.title("Major distribution for "+major_name+" major")
+        plt.title("Major distribution for "+major_name+" major", fontsize = 15)
         plt.savefig('result/major_distribution_'+major_name+'_major.png', dpi=300)
