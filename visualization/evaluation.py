@@ -14,10 +14,10 @@ def check(results):
         print(sum, system)
     
 def evaluation(results):       
-    # 학생이 신청한 학점 / 당첨된 학점 / 실제 수강한 학점 분포
+    # 학생이 신청한 학점 / 당첨된 학점 분포 표시
     credit_distribution(results)
 
-    # TO-DO : 학생이 신청한 학점 대비 당첨된 학점.
+    # 학생이 신청한 학점 / 당첨된 학점 구간 별 비율을 pie chart로 표시
     credit_ratio(results)
 
     # 전공 / 복수전공 / 부전공 / 전공X 별
@@ -27,5 +27,5 @@ def evaluation(results):
     # 과목별 주전/복전/부전 신청 및 당첨 비율
     major_distribution(results)
 
-    # # 학년 별 수강신청 대비 당첨 비율 
+    # 학년 별 수강신청 대비 당첨 비율 
     grade_satisfaction(results)
