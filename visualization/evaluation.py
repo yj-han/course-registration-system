@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from visualization.metrics.credit_distribution import credit_comparison_ratio, credit_distribution
+from visualization.metrics.credit_distribution import credit_ratio, credit_distribution
 from visualization.metrics.major_prioirty import major_satisfaction, major_distribution
 from visualization.metrics.grade_priority import grade_satisfaction
 import pandas as pd
@@ -18,7 +18,7 @@ def evaluation(results):
     credit_distribution(results)
 
     # TO-DO : 학생이 신청한 학점 대비 당첨된 학점.
-    # credit_comparison_ratio(results)
+    credit_ratio(results)
 
     # 전공 / 복수전공 / 부전공 / 전공X 별
     # 수강신청 대비 당첨 비율  (만족도)
