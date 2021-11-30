@@ -51,7 +51,7 @@ def get_major_ratios(major_satisfaction, major_type):
         ratios.append(major_satisfaction[system][major_type])
     return ratios
 
-def major_satisfaction(results):
+def major_satisfaction(results, semester):
     major_satisfaction = {}
     systems = list(results.keys())
     for system in systems:
@@ -87,9 +87,9 @@ def major_satisfaction(results):
         major_name = str(major).removeprefix('Major.')
         plt.title("Major satisfaction for "+major_name+" major")
         plt.legend()
-        plt.savefig('result/major_satisfaction_'+major_name+'_major.png', dpi=300)
+        plt.savefig('result/'+semester+'/major_satisfaction_'+major_name+'_major.png', dpi=300)
 
-def major_distribution(results):
+def major_distribution(results, semester):
     systems = list(results.keys())
     wish = {}
     final = {}
@@ -110,6 +110,10 @@ def major_distribution(results):
                 final[major] = final[major].append(timetables[major], ignore_index=True)
             final[major] = final[major].append(final_timetables[major], ignore_index=True)
 
+    bar_graph(final, systems, semester)
+    pie_graph(final, systems, semester)
+
+def bar_graph(final, systems, semester):
     ## 각 전공 별 주전/복전/부전 각각의 만족도 그래프
     for major in majors:
         x = np.arange(len(systems)+1)
@@ -129,4 +133,26 @@ def major_distribution(results):
         major_name = str(major).removeprefix('Major.')
         plt.legend()
         plt.title("Major distribution for "+major_name+" major", fontsize = 15)
-        plt.savefig('result/major_distribution_'+major_name+'_major.png', dpi=300)
+        plt.savefig('result/'+semester+'/major_distribution_bar_'+major_name+'_major.png', dpi=300)
+
+def pie_graph(final, systems, semester):
+    colors = ['#ff9999', '#ffc000', '#8fd9b6', '#d395d0']
+    for major in majors:
+        i=0
+        df = final[major]
+        df = df.set_index('system')
+        plt.clf()
+        plt.figure(figsize=(8,12))
+        labels = list(df.columns[:-1])
+        for system in ['wish']+systems:
+            ratio = list(df.loc[system])[:-1]
+            plt.subplot(321+i)
+            pie = plt.pie(ratio, labels = labels, counterclock = False, colors = colors, autopct='%.2f%%', startangle=180)
+            i+=1
+            if (system == 'wish'):
+                plt.title("Wish List")
+            else:
+                plt.title(system.capitalize()+ " system")
+        major_name = str(major).removeprefix('Major.')
+        plt.suptitle('Major distribution for '+major_name+' major')
+        plt.savefig('result/'+semester+'/major_distribution_pie_'+major_name+"_major.png", dpi = 300)

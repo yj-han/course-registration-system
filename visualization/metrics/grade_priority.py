@@ -12,7 +12,7 @@ def is_necessary(course, label):
         return True
     return False
 
-def grade_satisfaction(results):
+def grade_satisfaction(results, semester):
     labels = ['Logical Writing', 'AU', 'Basic Required', 'All']
     for label in labels:
         plt.clf()
@@ -48,4 +48,4 @@ def grade_satisfaction(results):
         plt.ylabel("Win rate")
         plt.title("Grade satisfaction for "+label)
         plt.legend()
-        plt.savefig('result/grade_satisfaction_'+label+'.png', dpi = 300)
+        plt.savefig('result/'+semester+'/grade_satisfaction_'+label+'.png', dpi = 300)
