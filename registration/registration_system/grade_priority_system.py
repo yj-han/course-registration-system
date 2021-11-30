@@ -27,7 +27,7 @@ class GradePrioritySystem(LotterySystem):
         Returns:
             List[Student]: registered students
         """
-        assert probability < 1
+        assert 0 < probability < 1, "Probability must be a value between 0 and 1"
 
         self.set_registration_list(students)
 

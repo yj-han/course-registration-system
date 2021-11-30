@@ -30,6 +30,9 @@ class MajorPrioritySystem(LotterySystem):
 
         major_probability, double_major_probability, minor_probability = p
         assert major_probability + double_major_probability + minor_probability < 1, "Sum of three values should be less than 1"
+        assert 0 < major_probability < 1, "Major probability must be a value between 0 and 1"
+        assert 0 < double_major_probability < 1, "Double major probability must be a value between 0 and 1"
+        assert 0 < minor_probability < 1, "Minor probability must be a value between 0 and 1"
         
         self.set_registration_list(students)
 

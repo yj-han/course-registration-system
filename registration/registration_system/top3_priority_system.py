@@ -25,8 +25,11 @@ class Top3PrioritySystem(LotterySystem):
         """
         assert len(p) == 3, "Length of p should be 3"
         
-        p1, p2, p3 = p
-        assert p1 + p2 + p3 == 1, "Sum of three values should be 1"
+        major_probability, liberal_art_probability, other_probability = p
+        assert major_probability + liberal_art_probability + other_probability == 1, "Sum of three values should be 1"
+        assert 0 < major_probability < 1, "Major probability must be a value between 0 and 1"
+        assert 0 < liberal_art_probability < 1, "Liberal art probability must be a value between 0 and 1"
+        assert 0 < other_probability < 1, "Other probability must be a value between 0 and 1"
         
         # Reorder students' timetable order to consider priority
         for student in students:
@@ -46,7 +49,7 @@ class Top3PrioritySystem(LotterySystem):
             competition_rate = np.array(competition_rate)
             new_order = np.arange(course_len)
 
-            prioritys = random.choices([1, 2, 3], [p1, p2, p3], k=3)
+            prioritys = random.choices([1, 2, 3], [major_probability, liberal_art_probability, other_probability], k=3)
 
             def switch_courses(i: int, priority: int) -> List[List]:
                 list_to_check = {1: is_major, 2: is_liberal_art, 3: is_other}[priority]
@@ -91,8 +94,11 @@ class Top3PrioritySystem(LotterySystem):
         """
         assert len(p) == 3, "Length of p should be 3"
 
-        p1, p2, p3 = p
-        assert p1 + p2 + p3 < 1, "Sum of three values should be less than 1"
+        first_probability, second_probability, third_probability = p
+        assert first_probability + second_probability + third_probability < 1, "Sum of three values should be less than 1"
+        assert 0 < first_probability < 1, "First probability must be a value between 0 and 1"
+        assert 0 < second_probability < 1, "Second probability must be a value between 0 and 1"
+        assert 0 < third_probability < 1, "Third probability must be a value between 0 and 1"
 
         self.set_registration_list(students)
 
@@ -124,9 +130,9 @@ class Top3PrioritySystem(LotterySystem):
                             
                             continue
 
-                first_capacity = min(int(course.capacity * p1), len(top3_prioritized["first"]))
-                second_capacity = min(int(course.capacity * p2), len(top3_prioritized["second"]))
-                third_capacity = min(int(course.capacity * p3), len(top3_prioritized["third"]))
+                first_capacity = min(int(course.capacity * first_probability), len(top3_prioritized["first"]))
+                second_capacity = min(int(course.capacity * second_probability), len(top3_prioritized["second"]))
+                third_capacity = min(int(course.capacity * third_probability), len(top3_prioritized["third"]))
                 fourth_capacity = course.capacity - first_capacity - second_capacity - third_capacity
 
                 # Randomly select students ordered by priority
