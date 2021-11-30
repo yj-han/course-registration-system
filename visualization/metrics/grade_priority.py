@@ -49,3 +49,4 @@ def grade_satisfaction(results, semester):
         plt.title("Grade satisfaction for "+label)
         plt.legend()
         plt.savefig('result/'+semester+'/grade_satisfaction_'+label+'.png', dpi = 300)
+        plt.close()

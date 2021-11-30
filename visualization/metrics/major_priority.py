@@ -84,10 +84,11 @@ def major_satisfaction(results, semester):
         plt.ylim(0, 100)
         plt.ylabel("Win rate")
         plt.xlabel("Systems")
-        major_name = str(major).removeprefix('Major.')
+        major_name = str(major).replace('Major.', '')
         plt.title("Major satisfaction for "+major_name+" major")
         plt.legend()
         plt.savefig('result/'+semester+'/major_satisfaction_'+major_name+'_major.png', dpi=300)
+        plt.close()
 
 def major_distribution(results, semester):
     systems = list(results.keys())
@@ -130,10 +131,11 @@ def bar_graph(final, systems, semester):
         plt.xticks(x, ['wish']+systems)
         plt.xlabel('System', fontsize = 12)
         plt.ylabel('# of students', fontsize = 12)
-        major_name = str(major).removeprefix('Major.')
+        major_name = str(major).replace('Major.', '')
         plt.legend()
         plt.title("Major distribution for "+major_name+" major", fontsize = 15)
         plt.savefig('result/'+semester+'/major_distribution_bar_'+major_name+'_major.png', dpi=300)
+        plt.close()
 
 def pie_graph(final, systems, semester):
     colors = ['#ff9999', '#ffc000', '#8fd9b6', '#d395d0']
@@ -153,6 +155,7 @@ def pie_graph(final, systems, semester):
                 plt.title("Wish List")
             else:
                 plt.title(system.capitalize()+ " system")
-        major_name = str(major).removeprefix('Major.')
+        major_name = str(major).replace('Major.', '')
         plt.suptitle('Major distribution for '+major_name+' major')
         plt.savefig('result/'+semester+'/major_distribution_pie_'+major_name+"_major.png", dpi = 300)
+        plt.close()

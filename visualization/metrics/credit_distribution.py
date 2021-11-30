@@ -66,7 +66,7 @@ def credit_distribution(results, semester):
     plt.ylabel("# of students")
     plt.legend(loc='upper right')
     plt.savefig('result/'+semester+'/credit_distribution.png', dpi=300)
-
+    plt.close()
     print(df)
 
 def credit_ratio(results, semester):
@@ -125,3 +125,4 @@ def credit_ratio(results, semester):
     plt.axis("off")
     plt.legend(pie[0], labels, loc="center")
     plt.savefig('result/'+semester+'/credit_distribution_pie.png', dpi=300)
+    plt.close()

@@ -3,6 +3,7 @@ from visualization.metrics.credit_distribution import credit_ratio, credit_distr
 from visualization.metrics.major_priority import major_satisfaction, major_distribution
 from visualization.metrics.grade_priority import grade_satisfaction
 import pandas as pd
+import os
 
 def check(results):
     print("전체 final timetable 길이가 모두 동일한지 체크")
@@ -14,7 +15,8 @@ def check(results):
         print(sum, system)
     
 def evaluation(results, semester):
-    semester = str(semester).removeprefix('Semester.').lower()
+    semester = str(semester).replace('Semester.', '').lower()
+    os.makedirs('./result/'+semester, exist_ok=True)
 
     # 학생이 신청한 학점 / 당첨된 학점 분포 표시
     credit_distribution(results, semester)
