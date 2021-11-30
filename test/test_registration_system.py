@@ -3,9 +3,9 @@ import copy
 
 from registration.course import Course, CourseType, Semester
 from registration.major import Major
-from registration.registration_system import LotterySystem
-from registration.registration_system import GradePrioritySystem
-from registration.registration_system import Top3PrioritySystem
+from registration.registration_system.lottery_system import LotterySystem
+from registration.registration_system.grade_priority_system import GradePrioritySystem
+from registration.registration_system.top3_priority_system import Top3PrioritySystem
 from registration.student import Degree, Student
 
 SEMESTER = Semester.FALL
