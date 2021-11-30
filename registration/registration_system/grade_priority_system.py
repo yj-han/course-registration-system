@@ -16,18 +16,18 @@ class GradePrioritySystem(LotterySystem):
         """
         super().__init__(courses_dict)
 
-    def register_students(self, students: List[Student], graduate_standard: int, percentage: int) -> List[Student]:
+    def register_students(self, students: List[Student], graduate_standard: int, probability: int) -> List[Student]:
         """Register students to courses
 
         Args:
             students (List[Student]): students to register
             graduate_standard (int): year to regard as graduate-to-be
-            percentage (float): the probability to give priority for graduate-to-be students
+            probability (float): the probability to give priority for graduate-to-be students
 
         Returns:
             List[Student]: registered students
         """
-        assert percentage < 1
+        assert probability < 1
 
         self.set_registration_list(students)
 
@@ -49,7 +49,7 @@ class GradePrioritySystem(LotterySystem):
                     else:
                         grade_dict["remaining"].append(student)
 
-                grade_priority_capacity = int(course.capacity * percentage)
+                grade_priority_capacity = int(course.capacity * probability)
 
                 random.shuffle(grade_dict["candidates"])
                 for i, student in enumerate(grade_dict["candidates"]):

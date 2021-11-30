@@ -231,8 +231,8 @@ class TestRegistrationSystem(unittest.TestCase):
         # run the test
         grade_priority_system = GradePrioritySystem(courses_dict)
         graduate_standard = 2018
-        priority_percentage = 0.25
-        results = grade_priority_system.register_students(students, graduate_standard, priority_percentage)
+        priority_probability = 0.25
+        results = grade_priority_system.register_students(students, graduate_standard, priority_probability)
 
         lucky_students = []
         for student in results:
@@ -247,7 +247,7 @@ class TestRegistrationSystem(unittest.TestCase):
         for lucky in lucky_students:
             if lucky.year <= graduate_standard:
                 priority_count += 1
-        self.assertGreaterEqual(priority_count, int(course2.capacity * priority_percentage / 100))
+        self.assertGreaterEqual(priority_count, int(course2.capacity * priority_probability / 100))
 
     def test_top3_priority_system(self):
         # Course 1: does not need lottery

@@ -27,7 +27,7 @@ class Top3PrioritySystem(LotterySystem):
         
         p1, p2, p3 = p
         assert p1 + p2 + p3 == 1, "Sum of three values should be 1"
-
+        
         # Reorder students' timetable order to consider priority
         for student in students:
             is_major = []
@@ -79,7 +79,6 @@ class Top3PrioritySystem(LotterySystem):
 
         return students
                 
-
     def register_students(self, students: List[Student], p: Tuple) -> List[Student]:
         """Register students to courses
 

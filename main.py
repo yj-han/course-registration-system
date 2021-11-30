@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     print(result_students[:5])    
 
-    # Change graduate standard and percentage to see various results
+    # Change graduate standard and probability to see various results
     grade_priority_system = GradePrioritySystem(copy.deepcopy(courses_dict))
     result_students = grade_priority_system.register_students(copy.deepcopy(students), 2018, 0.25)
     

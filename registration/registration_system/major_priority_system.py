@@ -28,9 +28,9 @@ class MajorPrioritySystem(LotterySystem):
         """
         assert len(p) == 3, "Length of p should be 3"
 
-        major_percentage, double_major_percentage, minor_percentage = p
-        assert major_percentage + double_major_percentage + minor_percentage < 1, "Sum of three values should be less than 1"
-
+        major_probability, double_major_probability, minor_probability = p
+        assert major_probability + double_major_probability + minor_probability < 1, "Sum of three values should be less than 1"
+        
         self.set_registration_list(students)
 
         # Randomly select students from each course
@@ -56,9 +56,9 @@ class MajorPrioritySystem(LotterySystem):
                     else:
                         major_students["remaining"].append(student)
 
-                major_priority_capacity = int(course.capacity * major_percentage)
-                double_major_priority_capacity = int(course.capacity * double_major_percentage)
-                minor_priority_capacity = int(course.capacity * minor_percentage)
+                major_priority_capacity = int(course.capacity * major_probability)
+                double_major_priority_capacity = int(course.capacity * double_major_probability)
+                minor_priority_capacity = int(course.capacity * minor_probability)
 
                 registered_students_count = 0
                 random.shuffle(major_students["major"])
