@@ -1,12 +1,12 @@
 from enum import Enum
 
-class COLOR(str, Enum):
-    LOTTERY = "C0"
-    MAJOR = "C1"
-    GRADE = "C2"
-    TOP3 = "C3"
-    TOP3B1 = "C4"
-    ELSE = "k"
+class MARKER(str, Enum):
+    LOTTERY = "H"
+    MAJOR = None
+    GRADE = None
+    TOP3 = None
+    TOP3B1 = "x"
+    ELSE = "^"
 
     @classmethod
     def value_of(cls, value):
