@@ -237,19 +237,21 @@ class GradePrioritySystem(LotterySystem):
                 grade_priority_capacity = int(course.capacity * percentage)
 
                 random.shuffle(grade_dict["candidates"])
+                registered_students_count = 0
                 for i, student in enumerate(grade_dict["candidates"]):
                     if i < grade_priority_capacity:
                         student.add_to_final_timetable(course)
+                        registered_students_count += 1
                     else:
                         break
-
+                
                 remaining = grade_dict["remaining"]
                 if grade_priority_capacity < len(grade_dict["candidates"]):
                     remaining += grade_dict["candidates"][grade_priority_capacity:]
 
                 random.shuffle(remaining)
                 for i, student in enumerate(remaining):
-                    if i < (course.capacity - grade_priority_capacity):
+                    if i < (course.capacity - registered_students_count):
                         student.add_to_final_timetable(course)
                     else:
                         break
