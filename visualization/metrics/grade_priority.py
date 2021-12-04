@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 from registration.course import CourseType
 from visualization.color import COLOR
 
+remove_system = ['major priority']
+
 def is_necessary(course, label):
     if label == 'Logical Writing' and course.name == "논리적글쓰기":
         return True
@@ -17,8 +19,10 @@ def grade_satisfaction(results, semester):
     labels = ['Logical Writing', 'AU', 'Basic Required', 'All']
     for label in labels:
         plt.clf()
-
-        for system in results:
+        systems = list(results.keys())
+        for s in remove_system:
+            systems.remove(s)
+        for system in systems:
             students = results[system]
             y = [[] for i in range(5)]
             timetables = {}

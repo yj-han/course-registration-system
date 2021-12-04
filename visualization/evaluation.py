@@ -4,15 +4,6 @@ from visualization.metrics.major_priority import major_satisfaction, major_distr
 from visualization.metrics.grade_priority import grade_satisfaction
 import pandas as pd
 import os
-
-def check(results):
-    print("전체 final timetable 길이가 모두 동일한지 체크")
-    # grade priority만 개수가 다름. 
-    for system in results:
-        sum = 0
-        for s in results[system]:
-            sum += len(s.final_timetable)
-        print(sum, system)
     
 def evaluation(results, semester):
     semester = str(semester).replace('Semester.', '').lower()

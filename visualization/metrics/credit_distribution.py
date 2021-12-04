@@ -5,6 +5,8 @@ from registration.student import Degree
 from visualization.color import COLOR
 from visualization.marker import MARKER
 
+remove_system = ['major priority', 'grade priority']
+
 def sum_credits(timetable):
     credits = 0
     for course in timetable:
@@ -30,20 +32,24 @@ def credit_distribution(results, semester):
         if s.degree == Degree.BACHELOR:
             all_students += 1
             wish_credit = sum_credits(s.timetable)
-            if wish_credit > 0:
-                wish_credits.append(wish_credit)
+            wish_credits.append(wish_credit)
             if wish_credit > 9:
                 over_standard += 1
     
     df.loc['wish', ">= 9 credits (%)"] = round(over_standard / all_students * 100, 2)
 
-    
-    bins = int(MAX_CREDIT)
-    histogram, _ = np.histogram(wish_credits, bins = bins)
-    plt.plot(range(bins), list(histogram[:MAX_CREDIT]), color=COLOR.ELSE, alpha = 0.5, label = "wish credits")
+    # plot graph of wish credits
+    # bins = int(max(wish_credits))+1
+    # histogram, _ = np.histogram(wish_credits, bins = bins)
+    # plt.plot(range(MAX_CREDIT), list(histogram[:MAX_CREDIT]), color=COLOR.ELSE, alpha = 0.5, label = "wish credits")
     
     # get win credit for each system
-    for system in results:
+
+    systems = list(results.keys())
+    for s in remove_system:
+        systems.remove(s)
+
+    for system in systems:
         final_credits = []
         students = results[system]
         over_standard = 0
@@ -51,18 +57,17 @@ def credit_distribution(results, semester):
             if s.degree == Degree.BACHELOR:
                 final_credit = sum_credits(s.final_timetable)
                 wish_credit = sum_credits(s.timetable)
-                if wish_credit > 0:
-                    final_credits.append(final_credit)
+                final_credits.append(final_credit)
                 if final_credit > 9:
                     over_standard += 1
 
         df.loc[system, ">= 9 credits (%)"] = round(over_standard / all_students * 100, 2)
-
-        bins = int(MAX_CREDIT)
+        
+        bins = int(max(final_credits))+1
         histogram, _ = np.histogram(final_credits, bins = bins)
-        plt.plot(range(bins), list(histogram[:MAX_CREDIT]), color=COLOR.value_of(system), marker=MARKER.value_of(system), label = "win credits of "+system+" system")
-
-    plt.xticks(range(bins))
+        plt.plot(range(MAX_CREDIT), list(histogram[:MAX_CREDIT]), color=COLOR.value_of(system), marker=MARKER.value_of(system), label = "win credits of "+system+" system")
+        
+    plt.xticks(range(MAX_CREDIT))
     plt.xlabel("Credits of final timetable")
     plt.ylabel("# of students")
     plt.legend(loc='upper right')
@@ -85,19 +90,18 @@ def credit_ratio(results, semester):
         if s.degree == Degree.BACHELOR:
             all_students += 1
             wish_credit = sum_credits(s.timetable)
-            if wish_credit > 0:
-                wish_credits.append(wish_credit)
+            wish_credits.append(wish_credit)
             if wish_credit > 9:
                 over_standard += 1
       
-    bins = int(max(wish_credits))
+    bins = int(max(wish_credits))+1
     histogram, _ = np.histogram(wish_credits, bins = bins)
     
     labels = ['0~8 credits', '9~14 credits', '15~20 credits', '21~ credits']
     colors = ['#ff9999', '#ffc000', '#8fd9b6', '#d395d0']
     
     ratio = [sum(histogram[:9]), sum(histogram[9:15]), sum (histogram[15:21]), sum(histogram[21:])]
-    plt.subplot(321)
+    plt.subplot(421)
     pie = plt.pie(ratio, labels=labels, counterclock=False, colors=colors, autopct='%.2f%%', startangle=180)
     plt.title("Wish credits")
     # get win credit for each system
@@ -110,19 +114,18 @@ def credit_ratio(results, semester):
             if s.degree == Degree.BACHELOR:
                 final_credit = sum_credits(s.final_timetable)
                 wish_credit = sum_credits(s.timetable)
-                if wish_credit > 0:
-                    final_credits.append(final_credit)
+                final_credits.append(final_credit)
                 if final_credit > 9:
                     over_standard += 1
 
-        bins = int(max(wish_credits))
+        bins = int(max(final_credits))+1
         histogram, _ = np.histogram(final_credits, bins = bins)
-        plt.subplot(322 + i)
+        plt.subplot(422 + i)
         i+=1
         ratio = [sum(histogram[:9]), sum(histogram[9:15]), sum (histogram[15:21]), sum(histogram[21:])]
         plt.pie(ratio, counterclock=False, labels=labels, colors=colors, autopct='%.2f%%', startangle=180)        
         plt.title("Final credits for "+ system + " system")
-    plt.subplot(326)
+    plt.subplot(422+i)
     plt.axis("off")
     plt.legend(pie[0], labels, loc="center")
     plt.savefig('result/'+semester+'/credit_distribution_pie.png', dpi=300)
