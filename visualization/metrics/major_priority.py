@@ -7,7 +7,7 @@ from visualization.color import COLOR
 from registration.course import CourseType
 
 majors = [Major.CS, Major.EE, Major.ID]
-remove_system = ['grade priority']
+remove_system = []
 
 def timetable_per_major(s, timetable, timetables):
     for course in timetable:   
@@ -208,7 +208,7 @@ def major_satisfaction2(results, semester):
         major_name = str(major).replace('Major.', '')
         plt.title("Major satisfaction for "+major_name+" major")
         plt.legend()
-        plt.savefig('result/'+semester+'/major_distribution_bar_'+major_name+'_major.png', dpi=300)
+        plt.savefig('result/'+semester+'/major_satisfaction_plot_'+major_name+'_major.png', dpi=300)
         plt.close()
 
 def pie_graph(final, systems, semester):
@@ -222,7 +222,7 @@ def pie_graph(final, systems, semester):
         labels = list(df.columns[:-1])
         for system in ['wish']+systems:
             ratio = list(df.loc[system])[:-1]
-            plt.subplot(321+i)
+            plt.subplot(421+i)
             pie = plt.pie(ratio, labels = labels, counterclock = False, colors = colors, autopct='%.2f%%', startangle=180)
             i+=1
             if (system == 'wish'):
