@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from registration.student import Degree
 from visualization.color import COLOR
+from visualization.marker import MARKER
 
 def sum_credits(timetable):
     credits = 0
@@ -56,11 +57,11 @@ def credit_distribution(results, semester):
                     over_standard += 1
 
         df.loc[system, ">= 9 credits (%)"] = round(over_standard / all_students * 100, 2)
-        
+
         bins = int(MAX_CREDIT)
         histogram, _ = np.histogram(final_credits, bins = bins)
-        plt.plot(range(bins), list(histogram[:MAX_CREDIT]), color=COLOR.value_of(system), label = "win credits of "+system+" system")
-        
+        plt.plot(range(bins), list(histogram[:MAX_CREDIT]), color=COLOR.value_of(system), marker=MARKER.value_of(system), label = "win credits of "+system+" system")
+
     plt.xticks(range(bins))
     plt.xlabel("Credits of final timetable")
     plt.ylabel("# of students")

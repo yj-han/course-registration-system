@@ -1,11 +1,14 @@
+import sys
+[sys.path.append(i) for i in ['.', '..']]
 import unittest
 import copy
 
 from registration.course import Course, CourseType, Semester
 from registration.major import Major
-from registration.registration_system import LotterySystem
-from registration.registration_system import GradePrioritySystem
-from registration.registration_system import Top3PrioritySystem
+from registration.registration_system.lottery_system import LotterySystem
+from registration.registration_system.grade_priority_system import GradePrioritySystem
+from registration.registration_system.top3_based_1_system import Top3Based1System
+from registration.registration_system.top3_priority_system import Top3PrioritySystem
 from registration.student import Degree, Student
 
 SEMESTER = Semester.FALL
@@ -231,8 +234,8 @@ class TestRegistrationSystem(unittest.TestCase):
         # run the test
         grade_priority_system = GradePrioritySystem(courses_dict)
         graduate_standard = 2018
-        priority_percentage = 0.25
-        results = grade_priority_system.register_students(students, graduate_standard, priority_percentage)
+        priority_probability = 0.25
+        results = grade_priority_system.register_students(students, graduate_standard, priority_probability)
 
         lucky_students = []
         for student in results:
@@ -247,7 +250,7 @@ class TestRegistrationSystem(unittest.TestCase):
         for lucky in lucky_students:
             if lucky.year <= graduate_standard:
                 priority_count += 1
-        self.assertGreaterEqual(priority_count, int(course2.capacity * priority_percentage / 100))
+        self.assertGreaterEqual(priority_count, int(course2.capacity * priority_probability / 100))
 
     def test_top3_priority_system(self):
         # Course 1: does not need lottery
@@ -309,6 +312,7 @@ class TestRegistrationSystem(unittest.TestCase):
             CourseType.LIBERAL_ARTS_ELECTIVE            
         )
         course4.set_num_applicants(5)
+
         # Course 5: needs lottery - Other
         course5 = Course(
             "Basics of Artificial Intelligence<Physical AI>",
@@ -371,6 +375,158 @@ class TestRegistrationSystem(unittest.TestCase):
             self.assertEqual(applicants_dict[course.code], 5)
         for course in [course1, course3, course4, course5]:
             self.assertEqual(applicants_dict[course.code], 3)
+
+    def test_top3_based_1_system(self):
+        # Course 1: needs lottery - Major
+        course1 = Course(
+            "System Programming",
+            "CS230",
+            Major.CS,
+            5,
+            None,
+            True,            
+            SEMESTER,            
+            3,
+            False,
+            CourseType.MAJOR_ELECTIVE
+        )
+        course1.set_num_applicants(8)
+
+        # Course 2~4: no limit, just padding course
+        course2 = Course(
+            "course2",
+            "CS102",
+            Major.CS,
+            0,
+            None,
+            False,
+            SEMESTER,            
+            3,            
+            False,
+            CourseType.MAJOR_ELECTIVE
+        )
+        course2.set_num_applicants(8)
+        
+        course3 = Course(
+            "course3",
+            "CS103",
+            Major.CS,
+            0,
+            None,
+            False,
+            SEMESTER,            
+            3,            
+            False,
+            CourseType.MAJOR_ELECTIVE
+        )
+        course3.set_num_applicants(8)
+        
+        course4 = Course(
+            "course4",
+            "CS104",
+            Major.CS,
+            0,
+            None,
+            False,
+            SEMESTER,            
+            3,            
+            False,
+            CourseType.MAJOR_ELECTIVE
+        )
+        course4.set_num_applicants(8)
+
+        courses_dict = {
+            course1.code: course1,
+            course2.code: course2,
+            course3.code: course3,
+            course4.code: course4
+        }
+        
+        student1 = Student("A", 
+                    2020, 
+                    Degree.BACHELOR, 
+                    Major.CS,
+                    None, 
+                    None, 
+                    [course1, course2, course3, course4],
+                    [])
+        student2 = Student("B", 
+                    2020, 
+                    Degree.BACHELOR, 
+                    Major.ME,
+                    None, 
+                    None, 
+                    [course2, course3, course4, course1],
+                    [])
+        student3 = Student("C", 
+                    2019, 
+                    Degree.BACHELOR, 
+                    Major.CS,
+                    None, 
+                    None, 
+                    [course2, course1, course3, course4],
+                    [])
+        student4 = Student("D", 
+                    2019, 
+                    Degree.BACHELOR, 
+                    Major.ME,
+                    None, 
+                    None, 
+                    [course2, course3, course4, course1],
+                    [])
+        student5 = Student("E", 
+                    2018, 
+                    Degree.BACHELOR, 
+                    Major.CS,
+                    None, 
+                    None, 
+                    [course2, course3, course4, course1],
+                    [])
+        student6 = Student("F", 
+                    2018, 
+                    Degree.BACHELOR, 
+                    Major.ME,
+                    None, 
+                    None, 
+                    [course2, course3, course1, course4],
+                    [])
+        student7 = Student("E", 
+                    2017, 
+                    Degree.BACHELOR, 
+                    Major.CS,
+                    None, 
+                    None, 
+                    [course2, course3, course4, course1],
+                    [])
+        student8 = Student("F", 
+                    2017, 
+                    Degree.BACHELOR, 
+                    Major.ME,
+                    None, 
+                    None, 
+                    [course2, course3, course4, course1],
+                    [])
+
+        students = [student1, student2, student3, student4, student5, student6, student7, student8]
+
+        # run the test
+        prioritize_system = Top3Based1System(courses_dict)
+        results = prioritize_system.register_students(students, (0.2, 0.2, 0.2), 0.9, 0.9, 2018)
+                    
+        applicants_dict = {course1.code:0, course2.code:0, course3.code:0, course4.code:0}
+
+        for student in results:
+            for course in student.final_timetable:
+                applicants_dict[course.code] += 1
+
+        for course in [course1]: # no limit case
+            self.assertEqual(applicants_dict[course.code], 5)
+        for course in [course2, course3, course4]:
+            self.assertEqual(applicants_dict[course.code], 8)
+
+        # Non-major, lower grades must not be selected.
+        self.assertNotIn(course1, results[1].final_timetable)
+        self.assertNotIn(course1, results[3].final_timetable)
 
 
 if __name__ == "__main__":

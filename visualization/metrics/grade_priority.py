@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from registration.course import CourseType
+from visualization.color import COLOR
 
 def is_necessary(course, label):
     if label == 'Logical Writing' and course.name == "논리적글쓰기":
@@ -42,7 +43,12 @@ def grade_satisfaction(results, semester):
                 else:
                     y[i].append(final_timetables[i+1] / timetables[i+1] * 100)
             x = list(range(1, 6))
-            plt.plot(x, y, label=system)
+            
+            if system in ('grade priority', 'top3 based 1'):
+                plt.plot(x, y, label=system, color=COLOR.value_of(system), linewidth=2)
+            else:
+                plt.plot(x, y, label=system, color=COLOR.value_of(system))
+
         plt.xticks(x)
         plt.xlabel("Grade")
         plt.ylabel("Win rate")

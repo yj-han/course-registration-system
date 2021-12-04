@@ -106,7 +106,7 @@ class Course:
         self.__num_applicants = num_applicants
 
     def __str__(self) -> str:
-        return f"{self.name} \n\t code: {self.code} \n\t major: {self.major} \n\t capacity: {self.capacity} \n\t division: {self.division} \n\t is_lottery: {self.is_lottery} \n\t semester: {self.semester} \n\t credit: {self.credit} \n\t num_applicants: {self.get_num_applicants()} \n\t is_au: {self.is_au} \n\t course_type: {self.course_type}"
+        return f"\n{self.name} \n\t code: {self.code} \n\t major: {self.major} \n\t capacity: {self.capacity} \n\t division: {self.division} \n\t is_lottery: {self.is_lottery} \n\t semester: {self.semester} \n\t credit: {self.credit} \n\t num_applicants: {self.get_num_applicants()} \n\t is_au: {self.is_au} \n\t course_type: {self.course_type}"
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Course):

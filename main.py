@@ -1,7 +1,11 @@
 import copy
 from registration.course import Semester
-from registration.registration_system import *
-from util.parse import parse_course_file, parse_student_file, generate_course_type_enum
+from registration.registration_system.lottery_system import LotterySystem
+from registration.registration_system.major_priority_system import MajorPrioritySystem
+from registration.registration_system.grade_priority_system import GradePrioritySystem
+from registration.registration_system.top3_priority_system import Top3PrioritySystem
+from registration.registration_system.top3_based_1_system import Top3Based1System
+from util.parse import parse_course_file, parse_student_file
 from visualization.evaluation import evaluation
 
 if __name__ == "__main__":
@@ -15,13 +19,13 @@ if __name__ == "__main__":
         lottery_system = LotterySystem(copy.deepcopy(courses_dict))
         result_students = lottery_system.register_students(copy.deepcopy(students))
         results['lottery'] = result_students
-
+        
         # Change distributions to see various results
         major_priority_system = MajorPrioritySystem(copy.deepcopy(courses_dict))
         result_students = major_priority_system.register_students(copy.deepcopy(students), (0.3, 0.3, 0.1))
         results['major priority'] = result_students
 
-        # Change graduate standard and percentage to see various results
+        # Change graduate standard and probability to see various results
         grade_priority_system = GradePrioritySystem(copy.deepcopy(courses_dict))
         result_students = grade_priority_system.register_students(copy.deepcopy(students), 2018, 0.25)
         results['grade priority'] = result_students
@@ -31,5 +35,11 @@ if __name__ == "__main__":
         prioritized_students = top3_priority_system.designate_priority(copy.deepcopy(students), (0.5, 0.4, 0.1))
         result_students = top3_priority_system.register_students(prioritized_students, (0.2, 0.2, 0.2))
         results['top3 priority'] = result_students
-        
+
+        # Change distributions to see various results
+        top3_based_1_system = Top3Based1System(copy.deepcopy(courses_dict))
+        prioritized_students = top3_based_1_system.designate_priority(copy.deepcopy(students), (0.5, 0.4, 0.1))
+        result_students = top3_based_1_system.register_students(prioritized_students, (0.2, 0.2, 0.2), 0.7, 0.7, 2018)
+        results['top3 based 1'] = result_students
+
         evaluation(results, semester)
