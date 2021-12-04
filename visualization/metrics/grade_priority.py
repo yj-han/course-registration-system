@@ -16,8 +16,9 @@ def grade_satisfaction(results, semester):
     labels = ['Logical Writing', 'AU', 'Basic Required', 'All']
     for label in labels:
         plt.clf()
-
-        for system in results:
+        systems = list(results.keys())
+        systems.remove('major priority')
+        for system in systems:
             students = results[system]
             y = [[] for i in range(5)]
             timetables = {}

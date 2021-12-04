@@ -54,6 +54,7 @@ def get_major_ratios(major_satisfaction, major_type):
 def major_satisfaction(results, semester):
     major_satisfaction = {}
     systems = list(results.keys())
+    systems.remove('grade priority')
     for system in systems:
         timetables = {}
         final_timetables = {}
@@ -69,6 +70,10 @@ def major_satisfaction(results, semester):
             except:
                 major_satisfaction[major] = {system : ratios}
     
+    satisfaction_bar(major_satisfaction, semester, systems)
+    satisfaction_plot(major_satisfaction, semester, systems)
+
+def satisfaction_bar(major_satisfaction, semester, systems):
     ## 각 전공 별 주전/복전/부전 각각의 만족도 그래프
     for major in majors:
         x = np.arange(len(systems))
@@ -87,11 +92,33 @@ def major_satisfaction(results, semester):
         major_name = str(major).replace('Major.', '')
         plt.title("Major satisfaction for "+major_name+" major")
         plt.legend()
-        plt.savefig('result/'+semester+'/major_satisfaction_'+major_name+'_major.png', dpi=300)
+        plt.savefig('result/'+semester+'/major_satisfaction_bar_'+major_name+'_major.png', dpi=300)
+        plt.close()
+
+def satisfaction_plot(major_satisfaction, semester, systems):
+    for major in majors:
+        plt.clf()
+        for system in systems:
+            x = ['major', 'double_major', 'minor', 'no_major']
+            y = []
+            for i in x:
+                y.append(major_satisfaction[major][system][i])
+
+            plt.plot(x, y, label=system, color=COLOR.value_of(system))
+        
+        plt.xticks(x)
+        plt.ylim(0, 100)
+        plt.ylabel("Win rate")
+        plt.xlabel("Systems")
+        major_name = str(major).replace('Major.', '')
+        plt.title("Major satisfaction for "+major_name+" major")
+        plt.legend()
+        plt.savefig('result/'+semester+'/major_satisfaction_plot_'+major_name+'_major.png', dpi=300)
         plt.close()
 
 def major_distribution(results, semester):
     systems = list(results.keys())
+    systems.remove('grade priority')
     wish = {}
     final = {}
     for major in majors:
