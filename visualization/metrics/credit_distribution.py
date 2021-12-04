@@ -30,14 +30,13 @@ def credit_distribution(results, semester):
         if s.degree == Degree.BACHELOR:
             all_students += 1
             wish_credit = sum_credits(s.timetable)
-            if wish_credit > 0:
-                wish_credits.append(wish_credit)
+            wish_credits.append(wish_credit)
             if wish_credit > 9:
                 over_standard += 1
     
     df.loc['wish', ">= 9 credits (%)"] = round(over_standard / all_students * 100, 2)
 
-    bins = int(max(wish_credits))
+    bins = int(max(wish_credits))+1
     histogram, _ = np.histogram(wish_credits, bins = bins)
     plt.plot(range(MAX_CREDIT), list(histogram[:MAX_CREDIT]), color=COLOR.ELSE, alpha = 0.5, label = "wish credits")
     
@@ -55,14 +54,13 @@ def credit_distribution(results, semester):
             if s.degree == Degree.BACHELOR:
                 final_credit = sum_credits(s.final_timetable)
                 wish_credit = sum_credits(s.timetable)
-                if wish_credit > 0:
-                    final_credits.append(final_credit)
+                final_credits.append(final_credit)
                 if final_credit > 9:
                     over_standard += 1
 
         df.loc[system, ">= 9 credits (%)"] = round(over_standard / all_students * 100, 2)
         
-        bins = int(max(wish_credits))
+        bins = int(max(final_credits))+1
         histogram, _ = np.histogram(final_credits, bins = bins)
         plt.plot(range(MAX_CREDIT), list(histogram[:MAX_CREDIT]), color=COLOR.value_of(system), marker=MARKER.value_of(system), label = "win credits of "+system+" system")
         
@@ -89,12 +87,11 @@ def credit_ratio(results, semester):
         if s.degree == Degree.BACHELOR:
             all_students += 1
             wish_credit = sum_credits(s.timetable)
-            if wish_credit > 0:
-                wish_credits.append(wish_credit)
+            wish_credits.append(wish_credit)
             if wish_credit > 9:
                 over_standard += 1
       
-    bins = int(max(wish_credits))
+    bins = int(max(wish_credits))+1
     histogram, _ = np.histogram(wish_credits, bins = bins)
     
     labels = ['0~8 credits', '9~14 credits', '15~20 credits', '21~ credits']
@@ -114,12 +111,11 @@ def credit_ratio(results, semester):
             if s.degree == Degree.BACHELOR:
                 final_credit = sum_credits(s.final_timetable)
                 wish_credit = sum_credits(s.timetable)
-                if wish_credit > 0:
-                    final_credits.append(final_credit)
+                final_credits.append(final_credit)
                 if final_credit > 9:
                     over_standard += 1
 
-        bins = int(max(wish_credits))
+        bins = int(max(final_credits))+1
         histogram, _ = np.histogram(final_credits, bins = bins)
         plt.subplot(322 + i)
         i+=1

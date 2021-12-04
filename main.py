@@ -5,7 +5,7 @@ from util.parse import parse_course_file, parse_student_file, generate_course_ty
 from visualization.evaluation import evaluation
 
 if __name__ == "__main__":
-    for semester in [Semester.SPRING]: #, Semester.FALL]:
+    for semester in [Semester.SPRING, Semester.FALL]:
         courses_dict = parse_course_file("2021 정규학기 과목별 추첨여부.xlsx", "2021 "+semester.value+"학기 과목.xls", semester)
         students_dict = parse_student_file("2021 정규학기 수강신청 내역.xlsx", courses_dict, semester)
         

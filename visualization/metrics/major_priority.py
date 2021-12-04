@@ -61,7 +61,7 @@ def major_satisfaction(results, semester):
         for s in students:
             timetables = timetable_per_major(s, s.timetable, timetables)
             final_timetables = timetable_per_major(s, s.final_timetable, final_timetables)
-        print(ee)
+            
         for major in majors:
             ratios = get_ratios(timetables, final_timetables, major)
             try:
