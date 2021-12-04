@@ -16,7 +16,7 @@ class GradePrioritySystem(LotterySystem):
         """
         super().__init__(courses_dict)
 
-    def register_students(self, students: List[Student], graduate_standard: int, probability: int) -> List[Student]:
+    def register_students(self, students: List[Student], graduate_standard: int, probability: float) -> List[Student]:
         """Register students to courses
 
         Args:

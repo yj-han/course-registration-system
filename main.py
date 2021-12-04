@@ -6,6 +6,7 @@ from registration.registration_system.major_priority_system import MajorPriority
 from registration.registration_system.grade_priority_system import GradePrioritySystem
 from registration.registration_system.top3_priority_system import Top3PrioritySystem
 from registration.registration_system.top3_based_1_system import Top3Based1System
+from registration.registration_system.top3_based_2_system import Top3Based2System
 from util.parse import parse_course_file, parse_student_file
 
 if __name__ == "__main__":
@@ -43,4 +44,11 @@ if __name__ == "__main__":
     prioritized_students = top3_based_1_system.designate_priority(copy.deepcopy(students), (0.5, 0.4, 0.1))
     result_students = top3_based_1_system.register_students(prioritized_students, (0.2, 0.2, 0.2), 0.3, 0.3, 2018)
 
+    print(result_students[:5])
+
+    top3_based_2_system = Top3Based2System(copy.deepcopy(courses_dict))
+    prioritized_students = top3_based_2_system.designate_priority(copy.deepcopy(students), (0.5, 0.4, 0.1))
+    result_students = top3_based_2_system.register_students(prioritized_students, (0.2, 0.2, 0.2), 0.3, 0.3, 2018)
+
+    print("top3based2")
     print(result_students[:5])
