@@ -6,12 +6,14 @@ from registration.major import Major
 from visualization.color import COLOR
 from registration.course import CourseType
 
-majors = [Major.CS, Major.EE, Major.ID, Major.MAS]
+majors = [Major.CS, Major.EE, Major.ID]
 remove_system = ['grade priority']
 
 def timetable_per_major(s, timetable, timetables):
     for course in timetable:   
-        if not course.is_lottery and course.course_type == CourseType.BASIC_REQUIRED:
+        if not course.is_lottery:
+            continue
+        if not (course.course_type == CourseType.MAJOR_REQUIRED or course.course_type == CourseType.MAJOR_ELECTIVE):
             continue
         major = course.major
         if major not in majors:
