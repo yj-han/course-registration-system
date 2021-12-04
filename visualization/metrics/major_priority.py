@@ -222,7 +222,7 @@ def pie_graph(final, systems, semester):
         labels = list(df.columns[:-1])
         for system in ['wish']+systems:
             ratio = list(df.loc[system])[:-1]
-            plt.subplot(321+i)
+            plt.subplot(421+i)
             pie = plt.pie(ratio, labels = labels, counterclock = False, colors = colors, autopct='%.2f%%', startangle=180)
             i+=1
             if (system == 'wish'):
