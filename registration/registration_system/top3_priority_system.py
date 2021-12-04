@@ -2,6 +2,7 @@ from typing import Dict, List, Tuple
 import numpy as np
 import random
 random.seed(100)
+np.random.seed(100)
 
 from registration.registration_system.lottery_system import LotterySystem
 from registration.course import Course
@@ -114,7 +115,7 @@ class Top3PrioritySystem(LotterySystem):
                 continue
             else:
                 # Make priority list considering the order of students' timetable
-                top3_prioritized = {"first": [], "second": [], "third": [], "etc": []}
+                top3_prioritized = {"first": [], "second": [], "third": [], "remaining": []}
 
                 for student in register_list:
                     for priority, student_course in enumerate(student.timetable):
@@ -126,10 +127,8 @@ class Top3PrioritySystem(LotterySystem):
                             elif priority == 2:
                                 top3_prioritized["third"].append(student)
                             else:
-                                top3_prioritized["etc"].append(student)
+                                top3_prioritized["remaining"].append(student)
                             
-                            continue
-
                 first_capacity = min(int(course.capacity * first_probability), len(top3_prioritized["first"]))
                 second_capacity = min(int(course.capacity * second_probability), len(top3_prioritized["second"]))
                 third_capacity = min(int(course.capacity * third_probability), len(top3_prioritized["third"]))
@@ -162,9 +161,9 @@ class Top3PrioritySystem(LotterySystem):
                     else:
                         remained_students.append(student)
 
-                top3_prioritized["etc"].extend(remained_students)
-                random.shuffle(top3_prioritized["etc"])
-                for i, student in enumerate(top3_prioritized["etc"]):
+                top3_prioritized["remaining"].extend(remained_students)
+                random.shuffle(top3_prioritized["remaining"])
+                for i, student in enumerate(top3_prioritized["remaining"]):
                     if i < fourth_capacity:
                         student.add_to_final_timetable(course)
                     else:

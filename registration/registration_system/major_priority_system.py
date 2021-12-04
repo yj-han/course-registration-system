@@ -59,46 +59,42 @@ class MajorPrioritySystem(LotterySystem):
                     else:
                         major_students["remaining"].append(student)
 
-                major_priority_capacity = int(course.capacity * major_probability)
-                double_major_priority_capacity = int(course.capacity * double_major_probability)
-                minor_priority_capacity = int(course.capacity * minor_probability)
+                major_priority_capacity = min(int(course.capacity * major_probability), len(major_students["major"]))
+                double_major_priority_capacity = min(int(course.capacity * double_major_probability), len(major_students["double_major"]))
+                minor_priority_capacity = min(int(course.capacity * minor_probability), len(major_students["minor"]))
+                remaining_capacity = course.capacity - major_priority_capacity - double_major_priority_capacity - minor_priority_capacity
 
-                registered_students_count = 0
+                # Randomly select students ordered by priority
+                remained_students = []
                 random.shuffle(major_students["major"])
                 for i, student in enumerate(major_students["major"]):
                     if i < major_priority_capacity:
                         student.add_to_final_timetable(course)
-                        registered_students_count += 1
                     else:
-                        break
+                        remained_students.append(student)
 
+                major_students["double_major"].extend(remained_students)
+                remained_students = []
                 random.shuffle(major_students["double_major"])
                 for i, student in enumerate(major_students["double_major"]):
                     if i < double_major_priority_capacity:
                         student.add_to_final_timetable(course)
-                        registered_students_count += 1
                     else:
-                        break
+                        remained_students.append(student)
 
+                major_students["minor"].extend(remained_students)
+                remained_students = []
                 random.shuffle(major_students["minor"])
                 for i, student in enumerate(major_students["minor"]):
                     if i < minor_priority_capacity:
                         student.add_to_final_timetable(course)
-                        registered_students_count += 1
                     else:
-                        break
+                        remained_students.append(student)
 
-                remaining = major_students["remaining"]
-                if major_priority_capacity < len(major_students["major"]):
-                    remaining += major_students["major"][major_priority_capacity:]
-                if double_major_priority_capacity < len(major_students["double_major"]):
-                    remaining += major_students["double_major"][double_major_priority_capacity:]
-                if minor_priority_capacity < len(major_students["minor"]):
-                    remaining += major_students["minor"][minor_priority_capacity:]
-
-                random.shuffle(remaining)
-                for i, student in enumerate(remaining):
-                    if i < (course.capacity - registered_students_count):
+                major_students["remaining"].extend(remained_students)
+                random.shuffle(major_students["remaining"])
+                for i, student in enumerate(major_students["remaining"]):
+                    if i < remaining_capacity:
                         student.add_to_final_timetable(course)
                     else:
                         break

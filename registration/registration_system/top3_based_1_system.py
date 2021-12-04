@@ -84,7 +84,7 @@ class Top3Based1System(Top3PrioritySystem):
                     if i < first_capacity:
                         student.add_to_final_timetable(course)
                         
-                        if student.major == course.major:
+                        if course.major in (student.major, student.double_major, student.minor):
                             major_headcount += 1
                         if student.year <= graduate_standard:
                             grade_headcount += 1
@@ -98,7 +98,7 @@ class Top3Based1System(Top3PrioritySystem):
                     if i < second_capacity:
                         student.add_to_final_timetable(course)
                         
-                        if student.major == course.major:
+                        if course.major in (student.major, student.double_major, student.minor):
                             major_headcount += 1
                         if student.year <= graduate_standard:
                             grade_headcount += 1
@@ -112,7 +112,7 @@ class Top3Based1System(Top3PrioritySystem):
                     if i < third_capacity:
                         student.add_to_final_timetable(course)
                         
-                        if student.major == course.major:
+                        if course.major in (student.major, student.double_major, student.minor):
                             major_headcount += 1
                         if student.year <= graduate_standard:
                             grade_headcount += 1
@@ -127,7 +127,7 @@ class Top3Based1System(Top3PrioritySystem):
                     if guarantee_benefitted >= fourth_capacity:
                         break
 
-                    is_major = student.major == course.major
+                    is_major = course.major in (student.major, student.double_major, student.minor)
                     is_grade = student.year <= graduate_standard
                     more_major = major_headcount < major_guaranteed_capacity
                     more_grade = grade_headcount < grade_guaranteed_capacity
