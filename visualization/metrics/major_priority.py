@@ -134,7 +134,7 @@ def bar_graph(final, systems, semester):
         major_name = str(major).replace('Major.', '')
         plt.legend()
         plt.title("Major distribution for "+major_name+" major", fontsize = 15)
-        plt.savefig('result/major_distribution_'+major_name+'_major.png', dpi=300)
+        plt.savefig('result/'+semester+'/major_distribution_'+major_name+'_major.png', dpi=300)
 
 def major_satisfaction2(results, semester):
     major_satisfaction_dict = {}
@@ -176,7 +176,6 @@ def major_satisfaction2(results, semester):
         major_name = str(major).replace('Major.', '')
         plt.title("Major satisfaction for "+major_name+" major")
         plt.legend()
-        plt.savefig('result/major_satisfaction_'+major_name+'_major.png', dpi=300)
         plt.savefig('result/'+semester+'/major_distribution_bar_'+major_name+'_major.png', dpi=300)
         plt.close()
 
