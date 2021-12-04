@@ -7,7 +7,7 @@ from visualization.color import COLOR
 from registration.course import CourseType
 
 majors = [Major.CS, Major.EE, Major.ID]
-remove_system = ['grade priority']
+remove_system = []
 
 def timetable_per_major(s, timetable, timetables):
     for course in timetable:   
@@ -64,9 +64,12 @@ def major_satisfaction(results, semester):
         timetables = {}
         final_timetables = {}
         students = results[system]
+
         for s in students:
             timetables = timetable_per_major(s, s.timetable, timetables)
             final_timetables = timetable_per_major(s, s.final_timetable, final_timetables)
+
+        
 
         for major in majors:
             ratios = get_ratios(timetables, final_timetables, major)
@@ -208,7 +211,7 @@ def major_satisfaction2(results, semester):
         major_name = str(major).replace('Major.', '')
         plt.title("Major satisfaction for "+major_name+" major")
         plt.legend()
-        plt.savefig('result/'+semester+'/major_distribution_bar_'+major_name+'_major.png', dpi=300)
+        plt.savefig('result/'+semester+'/major_satisfaction_plot_'+major_name+'_major.png', dpi=300)
         plt.close()
 
 def pie_graph(final, systems, semester):
