@@ -37,10 +37,9 @@ def credit_distribution(results, semester):
     
     df.loc['wish', ">= 9 credits (%)"] = round(over_standard / all_students * 100, 2)
 
-    
-    # bins = int(MAX_CREDIT)
-    # histogram, _ = np.histogram(wish_credits, bins = bins)
-    # plt.plot(range(bins), list(histogram[:MAX_CREDIT]), color=COLOR.ELSE, alpha = 0.5, label = "wish credits")
+    bins = int(max(wish_credits))
+    histogram, _ = np.histogram(wish_credits, bins = bins)
+    plt.plot(range(MAX_CREDIT), list(histogram[:MAX_CREDIT]), color=COLOR.ELSE, alpha = 0.5, label = "wish credits")
     
     # get win credit for each system
 
@@ -63,11 +62,11 @@ def credit_distribution(results, semester):
 
         df.loc[system, ">= 9 credits (%)"] = round(over_standard / all_students * 100, 2)
         
-        bins = int(MAX_CREDIT)
+        bins = int(max(wish_credits))
         histogram, _ = np.histogram(final_credits, bins = bins)
-        plt.plot(range(bins), list(histogram[:MAX_CREDIT]), color=COLOR.value_of(system), marker=MARKER.value_of(system), label = "win credits of "+system+" system")
+        plt.plot(range(MAX_CREDIT), list(histogram[:MAX_CREDIT]), color=COLOR.value_of(system), marker=MARKER.value_of(system), label = "win credits of "+system+" system")
         
-    plt.xticks(range(bins))
+    plt.xticks(range(MAX_CREDIT))
     plt.xlabel("Credits of final timetable")
     plt.ylabel("# of students")
     plt.legend(loc='upper right')
