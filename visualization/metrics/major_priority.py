@@ -4,11 +4,14 @@ import pandas as pd
 from registration.student import Degree
 from registration.major import Major
 from visualization.color import COLOR
+from registration.course import CourseType
 
 majors = [Major.CS, Major.EE, Major.ID, Major.MAS]
+remove_system = ['grade priority']
+
 def timetable_per_major(s, timetable, timetables):
     for course in timetable:   
-        if not course.is_lottery:
+        if not course.is_lottery and course.course_type == CourseType.BASIC_REQUIRED:
             continue
         major = course.major
         if major not in majors:
@@ -53,7 +56,8 @@ def get_major_ratios(major_satisfaction, major_type):
 def major_satisfaction(results, semester):
     major_satisfaction = {}
     systems = list(results.keys())
-    systems.remove('grade priority')
+    for s in remove_system:
+        systems.remove(s)
     for system in systems:
         timetables = {}
         final_timetables = {}
@@ -61,7 +65,7 @@ def major_satisfaction(results, semester):
         for s in students:
             timetables = timetable_per_major(s, s.timetable, timetables)
             final_timetables = timetable_per_major(s, s.final_timetable, final_timetables)
-            
+
         for major in majors:
             ratios = get_ratios(timetables, final_timetables, major)
             try:
@@ -106,7 +110,6 @@ def satisfaction_plot(major_satisfaction, semester, systems):
             plt.plot(x, y, label=system, color=COLOR.value_of(system))
         
         plt.xticks(x)
-        plt.ylim(0, 100)
         plt.ylabel("Win rate")
         plt.xlabel("Systems")
         major_name = str(major).replace('Major.', '')
@@ -117,7 +120,8 @@ def satisfaction_plot(major_satisfaction, semester, systems):
 
 def major_distribution(results, semester):
     systems = list(results.keys())
-    systems.remove('grade priority')
+    for s in remove_system:
+        systems.remove(s)
     wish = {}
     final = {}
     for major in majors:
@@ -160,6 +164,48 @@ def bar_graph(final, systems, semester):
         major_name = str(major).replace('Major.', '')
         plt.legend()
         plt.title("Major distribution for "+major_name+" major", fontsize = 15)
+        plt.savefig('result/'+semester+'/major_distribution_'+major_name+'_major.png', dpi=300)
+
+def major_satisfaction2(results, semester):
+    major_satisfaction_dict = {}
+    systems = list(results.keys())
+
+    for system in systems:
+        timetables = {}
+        final_timetables = {}
+
+        students = results[system]
+        for s in students:
+            timetables = timetable_per_major(s, s.timetable, timetables)
+            final_timetables = timetable_per_major(s, s.final_timetable, final_timetables)
+
+        for major in majors:
+            ratios = get_ratios(timetables, final_timetables, major)
+            try:
+                major_satisfaction_dict[major][system] = ratios
+            except:
+                major_satisfaction_dict[major] = {system : ratios}
+
+    ## 각 전공 별 주전/복전/부전 각각의 만족도 그래프
+    for major in majors:
+        plt.clf()
+
+        for system in systems:
+            students = results[system]
+            x = ['major', 'double_major', 'minor', 'no_major']
+            y = []
+            for i in x:
+                y.append(major_satisfaction_dict[major][system][i])
+
+            plt.plot(x, y, label=system, color=COLOR.value_of(system))
+        
+        plt.xticks(x)
+        plt.ylim(0, 100)
+        plt.ylabel("Win rate")
+        plt.xlabel("Systems")
+        major_name = str(major).replace('Major.', '')
+        plt.title("Major satisfaction for "+major_name+" major")
+        plt.legend()
         plt.savefig('result/'+semester+'/major_distribution_bar_'+major_name+'_major.png', dpi=300)
         plt.close()
 

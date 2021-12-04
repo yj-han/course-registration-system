@@ -73,7 +73,7 @@ class Student:
         self.final_timetable.append(course)
     
     def __str__(self) -> str:
-        return f"{self.id} \n\t year: {self.year} \n\t degree: {self.degree} \n\t major: {self.major} \n\t length of timetable: {len(self.timetable)} \n\t length of final timetable: {len(self.final_timetable)}"
+        return f"\n{self.id} \n\t year: {self.year} \n\t degree: {self.degree} \n\t major: {self.major} \n\t length of timetable: {len(self.timetable)} \n\t length of final timetable: {len(self.final_timetable)}"
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Student):

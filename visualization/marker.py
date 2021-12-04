@@ -21,4 +21,4 @@ class MARKER(str, Enum):
         elif value == "top3 based 1":
             return cls.TOP3B1
         else:
-            return cls.ELS
+            return cls.ELSE
