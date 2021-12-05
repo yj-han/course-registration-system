@@ -25,8 +25,8 @@ def get_grade_distribution(bachelor_students: List[Student],
         ex)
         dict = {
             "label": {
-                "Above threshold": 13,
-                "Below threshold": 42
+                "Above threshold": [13, 2, 6, ...],
+                "Below threshold": [1, 3, 10, ...]
             },
             ...            
         }
@@ -35,14 +35,21 @@ def get_grade_distribution(bachelor_students: List[Student],
     
     grade_satisfaction_distribution = dict()
     for key in course_filters_dict.keys():
-        grade_satisfaction_distribution[key] = defaultdict(int)
+        grade_satisfaction_distribution[key] = defaultdict(list)
     
     for student in bachelor_students:
         age = threshold - student.year + 1
         grade = "Below Threshold" if age < 4 else "Above Threshold"
         
-        for final_course in student.final_timetable:
+        earned_credits = 0
+        for course in student.final_timetable:
+            if not course.is_lottery:
+                continue
+            
             for label, restraint_function in course_filters_dict.items():
-                grade_satisfaction_distribution[label][grade] += 1 if restraint_function(final_course) else 0
-                
+                if restraint_function(course):
+                    earned_credits += course.credit
+                                    
+        grade_satisfaction_distribution[label][grade].append(earned_credits)
+               
     return grade_satisfaction_distribution
