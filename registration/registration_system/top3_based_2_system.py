@@ -86,7 +86,7 @@ class Top3Based2System(Top3PrioritySystem):
                 random.shuffle(top3_based_2["first"])
 
                 for i, student in enumerate(top3_based_2["first"]):
-                    is_major = student.major == course.major
+                    is_major = course.major in (student.major, student.double_major)
                     is_grade = student.year <= graduate_standard
                     more_major = major_headcount < major_guaranteed_capacity
                     more_grade = grade_headcount < grade_guaranteed_capacity
@@ -126,7 +126,7 @@ class Top3Based2System(Top3PrioritySystem):
                 random.shuffle(top3_based_2["second"])
 
                 for i, student in enumerate(top3_based_2["second"]):
-                    is_major = student.major == course.major
+                    is_major = course.major in (student.major, student.double_major)
                     is_grade = student.year <= graduate_standard
                     more_major = major_headcount < major_guaranteed_capacity
                     more_grade = grade_headcount < grade_guaranteed_capacity
@@ -166,7 +166,7 @@ class Top3Based2System(Top3PrioritySystem):
                 random.shuffle(top3_based_2["third"])
 
                 for i, student in enumerate(top3_based_2["third"]):
-                    is_major = student.major == course.major
+                    is_major = course.major in (student.major, student.double_major)
                     is_grade = student.year <= graduate_standard
                     more_major = major_headcount < major_guaranteed_capacity
                     more_grade = grade_headcount < grade_guaranteed_capacity
@@ -208,7 +208,7 @@ class Top3Based2System(Top3PrioritySystem):
                     if guarantee_benefitted >= fourth_capacity:
                         break
 
-                    is_major = student.major == course.major
+                    is_major = course.major in (student.major, student.double_major)
                     is_grade = student.year <= graduate_standard
                     more_major = major_headcount < major_guaranteed_capacity
                     more_grade = grade_headcount < grade_guaranteed_capacity
