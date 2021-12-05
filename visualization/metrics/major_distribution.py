@@ -10,12 +10,12 @@ from registration.course import CourseType
 
 
 def get_major_distribution(bachelor_students: List[Student], 
-                           major_filters=[Major.CS, Major.EE]) -> Dict[Major, Dict[str, Dict[MajorType, int]]]:
+                           major_filters=[Major.CS]) -> Dict[Major, Dict[str, Dict[MajorType, int]]]:
     """Get the distribution of each major.
 
     Args:
         bachelor_students (List[Student]): bachelor students
-        major_filters (list, optional): Selected majors. Defaults to [Major.CS, Major.EE].
+        major_filters (list, optional): Selected majors. Defaults to [Major.CS].
 
     Returns:
         Dict[str, Dict[str, int]]: major satisfaction distribution
