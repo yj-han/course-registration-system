@@ -1,8 +1,4 @@
-from collections import defaultdict
 from typing import Dict, List
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 
 from registration.student import Degree, Student
 from registration.major import Major, MajorType
