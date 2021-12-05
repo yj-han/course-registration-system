@@ -1,6 +1,14 @@
 from enum import Enum, unique
 
 @unique
+class MajorType(str, Enum):
+    MAJOR = "Major"
+    MINOR = "Minor"
+    DOUBLE_MAJOR = "Double Major"
+    ELSE = "Else"
+
+
+@unique
 class Major(str, Enum):
     URP = "URP"
     HSS = "인문사회과학부"

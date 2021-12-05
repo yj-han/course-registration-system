@@ -7,13 +7,6 @@ from registration.course import Course
 from registration.student import Student
 
 
-class SystemType(Enum):
-    LOTTERY = 1
-    MAJOR_PRIORITY = 2
-    GRADE_PRIORITY = 3
-    TOP3_PRIORITY = 4
-
-
 class RegistrationSystem:
     def __init__(self, courses_dict: Dict[str, Course]) -> None:
         """Abstract class for Registration System
