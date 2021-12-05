@@ -1,11 +1,19 @@
 from enum import Enum
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional
 
 from registration.major import Major
 
 class Semester(str, Enum):
     SPRING = "봄"
     FALL = "가을"
+    
+    @classmethod
+    def value_of(cls, value):
+        for enum in cls.__members__.values():
+            if value == enum.value:
+                return enum
+        else:
+            return cls.SPRING
     
 
 class CourseType(str, Enum):

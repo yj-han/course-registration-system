@@ -1,24 +1,29 @@
 from enum import Enum
+from registration.registration_system.system_type import SystemType
+
 
 class COLOR(str, Enum):
-    LOTTERY = "C0"
-    MAJOR = "C1"
-    GRADE = "C2"
-    TOP3 = "C3"
-    TOP3B1 = "C4"
-    ELSE = "k"
+    LOTTERY = "#1f77b4"
+    MAJOR_PRIORITY = "#ff7f0e"
+    GRADE_PRIORITY = "#2ca02c"
+    TOP3_PRIORITY = "d62728"
+    TOP3_BASED1 = "#9467bd"
+    TOP3_BASED2 = "#8c564b"
+    ELSE = "#e377c2"
 
     @classmethod
     def value_of(cls, value):
-        if value == "lottery":
+        if value == SystemType.LOTTERY:
             return cls.LOTTERY
-        elif value == "major priority":
-            return cls.MAJOR
-        elif value == "grade priority":
-            return cls.GRADE
-        elif value == "top3 priority":
-            return cls.TOP3
-        elif value == "top3 based 1":
-            return cls.TOP3B1
+        elif value == SystemType.MAJOR_PRIORITY:
+            return cls.MAJOR_PRIORITY
+        elif value == SystemType.GRADE_PRIORITY:
+            return cls.GRADE_PRIORITY
+        elif value == SystemType.TOP3_PRIORITY:
+            return cls.TOP3_PRIORITY
+        elif value == SystemType.TOP3_BASED1:
+            return cls.TOP3_BASED1
+        elif value == SystemType.TOP3_BASED2:
+            return cls.TOP3_BASED2        
         else:
             return cls.ELSE
