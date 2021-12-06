@@ -19,6 +19,7 @@ def grade_satisfaction(results, semester):
     labels = ['Logical Writing', 'AU', 'Basic Required', 'All']
     for label in labels:
         plt.clf()
+        plt.figure(figsize=(8,8))
         systems = list(results.keys())
         for s in remove_system:
             systems.remove(s)

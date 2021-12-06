@@ -97,10 +97,10 @@ def credit_ratio(results, semester):
     bins = int(max(wish_credits))+1
     histogram, _ = np.histogram(wish_credits, bins = bins)
     
-    labels = ['0~8 credits', '9~14 credits', '15~20 credits', '21~ credits']
-    colors = ['#ff9999', '#ffc000', '#8fd9b6', '#d395d0']
+    labels = ['0~11 credits', '12~20 credits', '21~ credits']
+    colors = ['#ff9999', '#ffc000', '#8fd9b6']
     
-    ratio = [sum(histogram[:9]), sum(histogram[9:15]), sum (histogram[15:21]), sum(histogram[21:])]
+    ratio = [sum(histogram[:12]), sum (histogram[12:21]), sum(histogram[21:])]
     plt.subplot(421)
     pie = plt.pie(ratio, labels=labels, counterclock=False, colors=colors, autopct='%.2f%%', startangle=180)
     plt.title("Wish credits")
@@ -122,7 +122,7 @@ def credit_ratio(results, semester):
         histogram, _ = np.histogram(final_credits, bins = bins)
         plt.subplot(422 + i)
         i+=1
-        ratio = [sum(histogram[:9]), sum(histogram[9:15]), sum (histogram[15:21]), sum(histogram[21:])]
+        ratio = [sum(histogram[:12]), sum(histogram[12:21]), sum(histogram[21:])]
         plt.pie(ratio, counterclock=False, labels=labels, colors=colors, autopct='%.2f%%', startangle=180)        
         plt.title("Final credits for "+ system + " system")
     plt.subplot(422+i)

@@ -164,11 +164,11 @@ def bar_graph(final, systems, semester):
         plt.bar(x, df['no_major'], bottom =  df['major']+df['double_major']+df['minor'], color = 'c', width=0.2, label='non major')
 
         plt.xticks(x, ['wish']+systems)
-        plt.xlabel('System', fontsize = 12)
-        plt.ylabel('# of students', fontsize = 12)
+        plt.xlabel('System')
+        plt.ylabel('# of students')
         major_name = str(major).replace('Major.', '')
         plt.legend()
-        plt.title("Major distribution for "+major_name+" major", fontsize = 15)
+        plt.title("Major distribution for "+major_name+" major")
         plt.savefig('result/'+semester+'/major_distribution_'+major_name+'_major.png', dpi=300)
 
 def major_satisfaction2(results, semester):
