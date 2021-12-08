@@ -144,5 +144,4 @@ cython_debug/
 .DS_Store
 .vscode/
 
-*.png
 default-*.ipynb
