@@ -1,4 +1,4 @@
-# Concrete Course Registration System
+# Course Registration System
 This repository contains codes and presentation slides for 2021 Fall CS489 Project.
 
 ## Project Description
